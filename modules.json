@@ -1,0 +1,33 @@
+{
+    "name": "prototaxites/metannotate",
+    "homePage": "https://github.com/prototaxites/metannotate",
+    "repos": {
+        "https://github.com/nf-core/modules.git": {
+            "modules": {
+                "nf-core": {
+                    "custom/dumpsoftwareversions": {
+                        "branch": "master",
+                        "git_sha": "76cc4938c1f6ea5c7d83fed1eeffc146787f9543",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "metaeuk/easypredict": {
+                        "branch": "master",
+                        "git_sha": "30d06da5bd7ae67be32758bf512cd75a4325d386",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "mmseqs/databases": {
+                        "branch": "master",
+                        "git_sha": "699e078133f580548aeb43114f93ac29928c6143",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
