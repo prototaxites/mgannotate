@@ -32,13 +32,11 @@ workflow FILTER_CONTIGS {
         | set { ch_mmseqs_tax_dbs }
     ch_versions = ch_versions.mix(MMSEQS_TAXONOMY.out.versions)
 
-    ch_mmseqs_tax_dbs.view()
-
     MMSEQS_FILTERTAXDB(ch_mmseqs_tax_dbs, taxdb)
     ch_versions = ch_versions.mix(MMSEQS_FILTERTAXDB.out.versions)
 
     // Join mmseqs sequence DBs with taxonomy DBs
-    ch_sequence_dbs = ch_mmseqs_dbs 
+    ch_sequence_dbs = ch_assembly_mmseqs_dbs 
         | map { meta, database ->
             def meta_new = meta - meta.subMap('basename')
             [meta_new, database]
@@ -67,12 +65,6 @@ workflow FILTER_CONTIGS {
         }
         | set { ch_filtered_assemblies }
 
-    // ch_assembly_fasta = ch_filtered_assemblies
-    //         | map { meta, database ->
-    //             def basename = file("$database/*.lookup", followLinks: true).baseName[0]
-    //             def meta_new = meta + [basename: basename]
-    //             [meta_new, database]
-    //         }
     MMSEQS_CONVERT2FASTA( ch_filtered_assemblies ) 
 
     emit:
