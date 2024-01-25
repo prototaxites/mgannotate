@@ -24,7 +24,7 @@ workflow METANNOTATE {
 
     if (params.filter_contigs && params.filter_taxon_list && (params.mmseqs_tax_db || params.mmseqs_tax_db_local)) {
         FILTER_CONTIGS (
-            ch_assembly_mmseqs_dbs,
+            ch_assemblies,
             DATABASES.out.tax_db
         )
         ch_versions               = ch_versions.mix(FILTER_CONTIGS.out.versions)
