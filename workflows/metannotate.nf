@@ -1,97 +1,60 @@
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
+// Check parameters
 include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
 def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-
 WorkflowMetannotate.initialise(params, log)
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// MODULE: Installed directly from nf-core/modules
-//
-include { MMSEQS_DATABASES            } from '../modules/nf-core/mmseqs/databases/main'
-include { METAEUK_EASYPREDICT         } from '../modules/nf-core/metaeuk/easypredict/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN MAIN WORKFLOW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Info required for completion email and summary
-def multiqc_report = []
+// Import subworkflows
+include { INPUT_CHECK    } from '../subworkflows/local/input_check'
+include { DATABASES      } from '../subworkflows/local/databases'
+include { FILTER_CONTIGS } from '../subworkflows/local/filter_contigs'
+include { ANNOTATION     } from '../subworkflows/local/annotation'
+include { COVERAGE       } from '../subworkflows/local/coverage'
 
 workflow METANNOTATE {
 
     ch_versions = Channel.empty()
 
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
+    // Read in input data
     INPUT_CHECK ()
     ch_assemblies = INPUT_CHECK.out.assemblies
 
-    MMSEQS_DATABASES ( params.mmseqs_db )
-    MMSEQS_DATABASES.out.database
-        .set { ch_mmseqs_db }
-    ch_versions = ch_versions.mix(MMSEQS_DATABASES.out.versions)
+    // Set up databases
+    DATABASES()
+    ch_versions = ch_versions.mix(DATABASES.out.versions)
 
-    METAEUK_EASYPREDICT ( 
-        ch_assemblies, 
-        ch_mmseqs_db
+    if (params.filter_contigs && params.filter_taxon_list && (params.mmseqs_tax_db || params.mmseqs_tax_db_local)) {
+        FILTER_CONTIGS (
+            ch_assembly_mmseqs_dbs,
+            DATABASES.out.tax_db
         )
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+        ch_versions               = ch_versions.mix(FILTER_CONTIGS.out.versions)
+        ch_contigs_for_annotation = FILTER_CONTIGS.out.filtered_mmseqs
+        ch_contigs_for_coverage   = FILTER_CONTIGS.out.filtered_fasta
+    } else {
+        ch_contigs_for_annotation = ch_assemblies
+        ch_contigs_for_coverage   = ch_assemblies
     }
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+
+    if((params.mmseqs_func_db || params.mmseqs_func_db_local) && params.eggnog_db) {
+        if(params.enable_annotation) {
+            ANNOTATION(
+                ch_contigs_for_annotation,
+                DATABASES.out.func_db,
+                DATABASES.out.eggnog_db
+            )
+            ch_versions = ch_versions.mix(ANNOTATION.out.versions)
+
+            if(params.enable_coverage && params.go_list) {
+                COVERAGE(
+                    INPUT_CHECK.out.reads,
+                    ch_contigs_for_coverage,
+                    ANNOTATION.out.cluster_tsv,
+                    ANNOTATION.out.annotations,
+                    ANNOTATION.out.gff,
+                    DATABASES.out.go_list
+                )
+                ch_versions = ch_versions.mix(COVERAGE.out.versions)
+            }
+        }
     }
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/

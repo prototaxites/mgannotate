@@ -5,42 +5,30 @@
     "description": "",
     "type": "object",
     "definitions": {
-        "database_options": {
-            "title": "Database options",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "mmseqs_db": {
-                    "type": "string",
-                    "description": "Name of the MMSeqs2 database to use for annotation."
-                },
-                "save_mmseqs_db": {
-                    "type": "string",
-                    "description": "Save the database?"
-                }
-            }
-        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input",
-                "outdir"
-            ],
+            "required": ["assemblies", "outdir"],
             "properties": {
-                "input": {
+                "assemblies": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/csv",
-                    "schema": "assets/schema_input.json",
+                    "schema": "assets/schema_assemblies.json",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "description": "Path to comma-separated file containing information about the assemblies for annotation.",
+                    "help_text": "Requires a CSV file with 3 headers.\n\nassemblyid,assembler,path",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "reads": {
+                    "type": "string",
+                    "description": "Path to comma-separated file containing information about the reads to be mapped to the assemblies..",
+                    "format": "file-path",
+                    "schema": "assets/schema_reads.json",
+                    "help_text": "Requires a CSV file with 4 headers:\n\nsampleid,assemblyid,forward_reads,reverse_reads"
                 },
                 "outdir": {
                     "type": "string",
@@ -54,6 +42,102 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                }
+            }
+        },
+        "database_options": {
+            "title": "Database options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "save_mmseqs_db": {
+                    "type": "boolean",
+                    "description": "Save download MMSeqs2 databases?"
+                },
+                "mmseqs_func_db": {
+                    "type": "string",
+                    "description": "Name of an MMSeqs2 database for functional annotation"
+                },
+                "mmseqs_func_db_local": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to local MMSeqs2 database for functional annotation"
+                },
+                "mmseqs_tax_db": {
+                    "type": "string",
+                    "description": "Name of an MMSeqs2 database for taxonomic annotation"
+                },
+                "mmseqs_tax_db_local": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to local MMSeqs2 database for taxonomic"
+                },
+                "eggnog_db": {
+                    "type": "string",
+                    "description": "Path to Eggnog-Mapper data directoy.",
+                    "format": "directory-path"
+                }
+            }
+        },
+        "taxonomic_filtering": {
+            "title": "Taxonomic filtering",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "filter_contigs": {
+                    "type": "boolean",
+                    "description": "Enable taxonomic filtering of contigs"
+                },
+                "filter_taxon_list": {
+                    "type": "string",
+                    "description": "A string defining the NCBI taxonomy nodes to keep/discard"
+                },
+                "save_filtered_assemblies_mmseqs": {
+                    "type": "boolean",
+                    "description": "Save filtered assemblies as mmseqs databases?",
+                    "enum": ["fasta", "mmseqs", "none"]
+                },
+                "save_filtered_assemblies_fasta": {
+                    "type": "boolean",
+                    "description": "Save filtered assemblies as fasta files?"
+                }
+            }
+        },
+        "annotation": {
+            "title": "Annotation",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "enable_annotation": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable annotation of genes"
+                },
+                "mmseqs_cluster_options": {
+                    "type": "string",
+                    "description": "Mmseqs command-line arguments for the mmseqs cluster call."
+                }
+            }
+        },
+        "new_group_1": {
+            "title": "New Group 1",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "enable_coverage": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable calculation of coverage of genes"
+                },
+                "go_list": {
+                    "type": "string",
+                    "default": "assets/GOs.csv",
+                    "description": "CSV file containing a list of Gene Orthology terms. Three columns: id,lbl,description.",
+                    "help_text": "id should contain a GO term in the \"GO:XXXXXXXX\" format.\nlbl is the name of the GO term.\ndescription is a free-text description of the GO term."
                 }
             }
         },
@@ -117,14 +201,7 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": [
-                        "symlink",
-                        "rellink",
-                        "link",
-                        "copy",
-                        "copyNoFollow",
-                        "move"
-                    ],
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -187,10 +264,19 @@
     },
     "allOf": [
         {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
             "$ref": "#/definitions/database_options"
         },
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/taxonomic_filtering"
+        },
+        {
+            "$ref": "#/definitions/annotation"
+        },
+        {
+            "$ref": "#/definitions/new_group_1"
         },
         {
             "$ref": "#/definitions/max_job_request_options"

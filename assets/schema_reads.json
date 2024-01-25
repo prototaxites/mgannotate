@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/prototaxites/metannotate/master/assets/schema_input.json",
+    "title": "prototaxites/metannotate pipeline - params.input schema",
+    "description": "Schema for the file provided with params.input",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sampleid": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["sampleid"]
+            },
+            "assemblyid": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "ID of the matching assembly for the reads to be mapped against must be provided.",
+                "meta": ["assemblyid"]
+            },
+            "forward_reads": {
+                "type": "string",
+                "errorMessage": "Forward reads fasta file cannot contain spaces and must have extension '.fa.gz' or '.fasta.gz'",
+                "pattern": "^\\S+\\.f(ast)?a(\\.gz$)?"
+            },
+            "reverse_reads": {
+                "errorMessage": "Reverse reads fasta file cannot contain spaces and must have extension '.fa.gz' or '.fasta.gz'",
+                "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^\\S+\\.f(ast)?q\\.gz$"
+                    },
+                    {
+                      "type": "string",
+                      "maxLength": 0
+                    }
+                  ]
+            }
+        },
+        "required": ["sampleid", "assemblyid", "forward_reads"]
+    }
+}
