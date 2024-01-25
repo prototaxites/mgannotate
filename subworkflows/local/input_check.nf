@@ -13,11 +13,12 @@ workflow INPUT_CHECK {
         Channel.fromSamplesheet("reads")
             | map { meta, fw, rev ->
                 def single_end = rev ? false : true
+                def nreads = reads[0].countFastq()
                 if(single_end) {
-                    def meta_new = meta + [ single_end: true ]
+                    def meta_new = meta + [ single_end: true, nreads: nreads ]
                     return [ meta_new, [fw] ]
                 } else {
-                    def meta_new = meta + [ single_end: false ]
+                    def meta_new = meta + [ single_end: false, nreads: nreads ]
                     return [ meta_new, [fw, rev] ]
                 }
             }

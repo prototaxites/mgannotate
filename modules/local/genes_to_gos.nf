@@ -69,7 +69,8 @@ process GENES_TO_GOS {
         list_rbind() |>
         bind_rows(unannotated) |>
         bind_rows(unmapped) |>
-        mutate(Sample = "${prefix}")
+        mutate(Sample = "${prefix}",
+            nreads = ${meta.nreads})
 
     write_csv(df, "${prefix}.annotations_counts.csv")
     write_csv(go_counts, "${prefix}.GOSummary.csv")
