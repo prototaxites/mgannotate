@@ -1,3 +1,4 @@
+//modified nf-core module
 process HTSEQ_COUNT {
     tag "$meta.assemblyid"
     label 'process_medium'

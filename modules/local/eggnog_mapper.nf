@@ -1,3 +1,4 @@
+//modified nf-core module
 process EGGNOG_MAPPER {
     tag "$meta.assemblyid"
     label 'process_medium'

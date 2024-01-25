@@ -1,3 +1,4 @@
+//modified nf-core module
 process METAEUK_EASYPREDICT {
     tag "$meta.assemblyid"
     label 'process_medium'
