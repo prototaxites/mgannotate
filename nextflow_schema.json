@@ -203,8 +203,15 @@
           "description": "Validation of parameters in lenient more.",
           "hidden": true,
           "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
+        },
+        "publish_dir_mode": {
+          "type": "string",
+          "default": "copy",
+          "description": "How to stage files in the publication directory.",
+          "hidden": true
         }
-      }
+      },
+      "required": ["publish_dir_mode"]
     }
   },
   "allOf": [
