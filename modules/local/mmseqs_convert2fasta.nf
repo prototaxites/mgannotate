@@ -25,6 +25,9 @@ process MMSEQS_CONVERT2FASTA {
         ${mmseqs_sequence_db}/${meta.basename} \\
         ${prefix}.fasta
 
+    gzip -c ${prefix}.fasta > ${prefix}.fa.gz
+    rm ${prefix}.fasta
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         mmseqs: \$(mmseqs | grep 'Version' | sed 's/MMseqs2 Version: //')
