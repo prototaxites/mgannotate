@@ -23,10 +23,12 @@ process GENES_TO_GOS {
     summarise_go <- function(df, go) {
         summary <- filter(df, str_detect(GO, go)) |>
             mutate(GO = go) |>
-            summarise(Count = sum(Count), .by = GO)
+            summarise(Nreads = sum(Count),
+                Ngenes = n(),
+                .by = GO)
 
         if(nrow(summary) == 0) {
-            summary <- tibble(GO = go, Count = 0)
+            summary <- tibble(GO = go, Nreads = 0, Ngenes = 0)
         }
 
         return(summary)
@@ -56,13 +58,17 @@ process GENES_TO_GOS {
 
     unmapped <- df |>
         filter(str_detect(gene_name, "^__")) |>
-        summarise(Count = sum(Count), .by = GO) |>
-        mutate(GO = "Unmapped")
+        mutate(GO = "Unmapped") |>
+        summarise(Nreads = sum(Count),
+            Ngenes = NA,
+            .by = GO) 
 
     unannotated <- df |>
         filter(is.na(GO), !str_detect(gene_name, "^__")) |>
-        summarise(Count = sum(Count), .by = GO) |>
-        mutate(GO = "Unannotated")
+        mutate(GO = "Unannotated") |>
+        summarise(Nreads = sum(Count),
+            Ngenes = n(),
+            .by = GO)
 
     go_list <- pull(gos, id)
     go_counts <- map(go_list, \\(x) summarise_go(df, x)) |>

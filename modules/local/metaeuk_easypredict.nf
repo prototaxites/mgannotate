@@ -34,6 +34,8 @@ process METAEUK_EASYPREDICT {
         tmp/ \\
         ${args}
 
+    rm -r tmp/
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         metaeuk: \$(metaeuk | grep 'Version' | sed 's/metaeuk Version: //')
