@@ -6,8 +6,12 @@ include { fromSamplesheet } from 'plugin/nf-validation'
 
 workflow INPUT_CHECK {
     main:
-    Channel.fromSamplesheet("assemblies")
-        .set { assemblies }
+    if(params.assemblies) {
+        Channel.fromSamplesheet("assemblies")
+            .set { assemblies }
+    } else {
+        assemblies = Channel.empty()
+    }
 
     if(params.reads) {
         Channel.fromSamplesheet("reads")

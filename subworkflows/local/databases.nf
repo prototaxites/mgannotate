@@ -1,5 +1,5 @@
-include { MMSEQS_DATABASES as MMSEQS_DATABASES_TAXONOMY   } from '../../modules/nf-core/mmseqs/databases/main'
-include { MMSEQS_DATABASES as MMSEQS_DATABASES_FUNCTION   } from '../../modules/nf-core/mmseqs/databases/main'
+include { MMSEQS_DATABASES as MMSEQS_DATABASES_TAXONOMY   } from '../../modules/mmseqs_databases'
+include { MMSEQS_DATABASES as MMSEQS_DATABASES_FUNCTION   } from '../../modules/mmseqs_databases'
 
 workflow DATABASES {
     main:

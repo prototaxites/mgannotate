@@ -1,6 +1,6 @@
-include { MMSEQS_EASYCLUSTER  } from '../../modules/local/mmseqs_easycluster'
-include { METAEUK_EASYPREDICT } from '../../modules/local/metaeuk_easypredict'
-include { EGGNOG_MAPPER       } from '../../modules/local/eggnog_mapper'
+include { MMSEQS_EASYCLUSTER  } from '../../modules/mmseqs_easycluster'
+include { METAEUK_EASYPREDICT } from '../../modules/metaeuk_easypredict'
+include { EGGNOG_MAPPER       } from '../../modules/eggnog_mapper'
 
 workflow ANNOTATION {
     take:

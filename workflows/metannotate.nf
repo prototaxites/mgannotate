@@ -6,6 +6,7 @@ WorkflowMetannotate.initialise(params, log)
 // Import subworkflows
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { DATABASES      } from '../subworkflows/local/databases'
+include { ASSEMBLY       } from '../subworkflows/local/assembly'
 include { FILTER_CONTIGS } from '../subworkflows/local/filter_contigs'
 include { ANNOTATION     } from '../subworkflows/local/annotation'
 include { COVERAGE       } from '../subworkflows/local/coverage'
@@ -15,12 +16,20 @@ workflow METANNOTATE {
     ch_versions = Channel.empty()
 
     // Read in input data
-    INPUT_CHECK ()
-    ch_assemblies = INPUT_CHECK.out.assemblies
+    INPUT_CHECK()
 
     // Set up databases
     DATABASES()
     ch_versions = ch_versions.mix(DATABASES.out.versions)
+
+    if(params.reads && !params.assemblies) {
+        ASSEMBLY(
+            INPUT_CHECK.out.reads
+        )
+        ch_assemblies = ASSEMBLY.out.assemblies
+    } else {
+        ch_assemblies = INPUT_CHECK.out.assemblies
+    }
 
     if (params.filter_contigs && params.filter_taxon_list && (params.mmseqs_tax_db || params.mmseqs_tax_db_local)) {
         FILTER_CONTIGS (

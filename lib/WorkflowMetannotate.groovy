@@ -11,6 +11,9 @@ class WorkflowMetannotate {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
+        if(!(params.reads || params.assemblies)) {
+            Nextflow.error("Error: no reads or assemblies provided! Pipeline has no input and will not run.")
+        }
         if(params.mmseqs_tax_db && params.mmseqs_tax_db_local) {
             Nextflow.error("Error: both --mmseqs_tax_db and --mmseqs_tax_db_local have been set! Please provide only one or the other.")
         }

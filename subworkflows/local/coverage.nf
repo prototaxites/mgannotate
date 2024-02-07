@@ -1,8 +1,8 @@
-include { BOWTIE2_BUILD } from '../../modules/nf-core/bowtie2/build/main'
-include { BOWTIE2_ALIGN } from '../../modules/local/bowtie2_align.nf'                                                                                                                                 
-include { HTSEQ_COUNT   } from '../../modules/local/htseq_count.nf'                                                                                                                                 
-include { GENES_TO_GOS  } from '../../modules/local/genes_to_gos'                                                                                                                                 
-include { SUMMARISE_GOS } from '../../modules/local/summarise_gos'                                                                                                                                 
+include { BOWTIE2_BUILD } from '../../modules/bowtie2_build'
+include { BOWTIE2_ALIGN } from '../../modules/bowtie2_align.nf'                                                                                                                                 
+include { HTSEQ_COUNT   } from '../../modules/htseq_count.nf'                                                                                                                                 
+include { GENES_TO_GOS  } from '../../modules/genes_to_gos'                                                                                                                                 
+include { SUMMARISE_GOS } from '../../modules/summarise_gos'                                                                                                                                 
 
 workflow COVERAGE {
     take:
