@@ -2,6 +2,79 @@
 
 **prototaxites/metannotate** is a bioinformatics pipeline that predicts genes in metagenome assemblies, annotates them, and produces a high-level summary of GO terms within them.
 
+## Pipeline summary
+
+Currently, the pipeline performs the following: 
+
+* (optional) (co-)assembly of metagenome shotgun short reads with [MEGAHIT](https://github.com/voutcn/megahit)
+* (optional) filtering of assembled contigs to remove or keep specific clades using [MMSeqs](https://github.com/soedinglab/MMseqs2/)
+* Prediction of protein-coding genes using [MetaEuk](https://github.com/soedinglab/metaeuk)
+* Annotation of assemblies using [eggnog-mapper](https://github.com/eggnogdb/eggnog-mapper)
+* Estimation of reads mapping to each gene in an assembly for each shotgun library using [bowtie2](https://bowtie-bio.sourceforge.net/bowtie2/index.shtml) and [HTSeq-count](https://github.com/htseq/htseq).
+* Production of count summaries for each GO in a provided list
+
+## Usage
+
+The pipeline can be run with the following command:
+
+```
+nextflow run prototaxites/metannotate \
+    -profile <docker/singularity/podman/shifter/charliecloud/conda> \
+    --reads <samplesheet_reads.csv> \
+    --outdir <OUTDIR>
+```
+
+### Input 
+
+#### Sequencing data
+
+Options for input are as follows:
+
+* `--reads` only: Pipeline will perform denovo assembly of shotgun reads
+* `--assemblies` only: Pipeline will annotate assemblies but not estimate gene or GO abundances
+* `--reads` and `--assemblies`: Pipeline will annotate assemblies and estimate gene and GO abundances
+
+Where:
+
+* `--reads` is a csv file with the following headers: `sampleid,assemblyid,forward_reads,reverse_reads`
+* `--assemblies` is a csv file with the following headers: `assemblyid,assembler,path`
+* `forward_reads`, `reverse_reads`, and `path` are the paths to the forward reads fastq, reverse reads fastq, and assembly fasta, respectively. Reverse reads are optional, but if using co-assembly, all reads for a given `assemblyid` must be paired or single-end only.
+* `assemblyid` is the unique identifier of the assembly. If `--assemblies` is provided, coverage for each reads entry mapping to an `assemblyid` is estimated individually. If no `--assemblies` is provided, `assemblyid` is used to group reads for co-assembly.
+* `sampleid` is a unique identifier for each shotgun sequencing sample.
+
+#### Databases
+
+The pipeline requires three databases for full functionality. If they are not provided, the steps requiring the databases will not be run.
+
+* Taxonomic database (MMSeqs format):
+    - This should be an MMSeqs database with taxonomic annotations. Can be provided either as a string with `--mmseqs_tax_db` with the names of one of the databases available at the [MMSeqs2 documentation](https://github.com/soedinglab/MMseqs2/wiki#downloading-databases), in which case it is downloaded, or as a path to a pre-downloaded local database with `--mmseqs_tax_db_local`.
+* Functional database (MMSeqs format):
+    - This should be an MMSeqs database to use for gene predictions with MetaEuk. Can be provided either as a string with `--mmseqs_func_db` with the names of one of the databases available at the [MMSeqs2 documentation](https://github.com/soedinglab/MMseqs2/wiki#downloading-databases), in which case it is downloaded, or as a path to a pre-downloaded local database with `--mmseqs_func_db_local`. If the eggnog-mapper MMSeqs2 database has been pre-downloaded, the path to this could also be provided.
+* eggnog-mapper database:
+    - Path to a directoy containing the eggnog-mapper database. Presently will not be downloaded automatically by the pipeline. Can be downloaded following the instructions provided in the [eggnog-mapper documentation](https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.12#user-content-Setup). When downloading the database, make sure to enable downloading the MMSeqs2 database with the `-M` flag as this is what is presently use by the pipeline.
+
+## Pipeline flags
+
+Some important pipeline flags to enable specific modes:
+
+* `--filter_contigs`: Enable taxonomic filtering of assembly contigs using the taxids specified in `--filter_taxon_list`.
+* `--enable_annotation`: (on by default) enable annotation of assemblies using MetaEuk and eggnog-mapper.
+* `--enable_coverage`: (on by default) enable read counting of genes using bowtie2 and HTSeq-count.
+
+## Pipeline output
+
+The output folder (`--outdir`) contains the following directories:
+
+* `assemblies/{assemblyid}`: denovo assembly fasta files
+* `annotations`:
+    - `metaeuk/{assemblyid}/`: MetaEuk protein and nucleotide fasta files of predicted genes, and GFF files
+    - `eggnog-mapper/{assemblyid}/`: eggnog-mapper annotation files
+* `coverage`:
+    - `counts`: per-sample tsv files of gene counts for the associated assembly
+    - `annotation_counts`: eggnog-mapper output with associated gene counts, and GO summary CSV files
+    - `GO_df_long.csv`: GO summaries for all samples merged into one summary file
+* `taxonomy/{assemblyid}_taxdb/`: MMseqs taxonomy DBs for the unfiltered assemblies.
+
 ## Attribution
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).

@@ -1,7 +1,6 @@
 process MMSEQS_FILTERTAXDB {
     tag "${meta.assemblyid}"
     label 'process_medium'
-    //stageInMode: "copy"
 
     conda "bioconda::mmseqs2=14.7e284"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
