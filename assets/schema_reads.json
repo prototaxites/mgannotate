@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/prototaxites/metannotate/master/assets/schema_input.json",
-    "title": "prototaxites/metannotate pipeline - params.input schema",
+    "$id": "https://raw.githubusercontent.com/prototaxites/mgannotate/master/assets/schema_input.json",
+    "title": "prototaxites/mgannotate pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {

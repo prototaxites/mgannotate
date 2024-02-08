@@ -1,6 +1,6 @@
 ## Introduction
 
-**prototaxites/metannotate** is a bioinformatics pipeline that predicts genes in metagenome assemblies, annotates them, and produces a high-level summary of GO terms within them.
+**prototaxites/mgannotate** is a bioinformatics pipeline that predicts genes in metagenome assemblies, annotates them, and produces a high-level summary of GO terms within them.
 
 ## Pipeline summary
 
@@ -18,7 +18,7 @@ Currently, the pipeline performs the following:
 The pipeline can be run with the following command:
 
 ```
-nextflow run prototaxites/metannotate \
+nextflow run prototaxites/mgannotate \
     -profile <docker/singularity/podman/shifter/charliecloud/conda> \
     --reads <samplesheet_reads.csv> \
     --outdir <OUTDIR>

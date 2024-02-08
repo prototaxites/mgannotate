@@ -1,11 +1,11 @@
 //
-// This file holds several functions specific to the workflow/metannotate.nf in the prototaxites/metannotate pipeline
+// This file holds several functions specific to the workflow/mgannotate.nf in the prototaxites/mgannotate pipeline
 //
 
 import nextflow.Nextflow
 import groovy.text.SimpleTemplateEngine
 
-class WorkflowMetannotate {
+class WorkflowMgannotate {
 
     //
     // Check and validate parameters

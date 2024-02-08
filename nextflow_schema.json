@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/prototaxites/metannotate/master/nextflow_schema.json",
-  "title": "prototaxites/metannotate pipeline parameters",
+  "$id": "https://raw.githubusercontent.com/prototaxites/mgannotate/master/nextflow_schema.json",
+  "title": "prototaxites/mgannotate pipeline parameters",
   "description": "",
   "type": "object",
   "definitions": {

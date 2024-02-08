@@ -1,6 +1,6 @@
 {
-    "name": "prototaxites/metannotate",
-    "homePage": "https://github.com/prototaxites/metannotate",
+    "name": "prototaxites/mgannotate",
+    "homePage": "https://github.com/prototaxites/mgannotate",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

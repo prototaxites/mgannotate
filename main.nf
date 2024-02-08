@@ -9,8 +9,8 @@ if (params.validate_params) {
     validateParameters()
 }
 
-include { METANNOTATE } from './workflows/metannotate'
+include { MGANNOTATE } from './workflows/mgannotate'
 
 workflow {
-    METANNOTATE ()
+    MGANNOTATE ()
 }

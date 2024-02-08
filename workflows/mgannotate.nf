@@ -1,7 +1,7 @@
 // Check parameters
 include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 def summary_params = paramsSummaryMap(workflow)
-WorkflowMetannotate.initialise(params, log)
+WorkflowMgannotate.initialise(params, log)
 
 // Import subworkflows
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
@@ -11,7 +11,7 @@ include { FILTER_CONTIGS } from '../subworkflows/local/filter_contigs'
 include { ANNOTATION     } from '../subworkflows/local/annotation'
 include { COVERAGE       } from '../subworkflows/local/coverage'
 
-workflow METANNOTATE {
+workflow MGANNOTATE {
 
     ch_versions = Channel.empty()
 
