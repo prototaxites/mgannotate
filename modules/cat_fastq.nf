@@ -1,6 +1,6 @@
 //nf-core module
 process CAT_FASTQ {
-    tag "$meta.id"
+    tag "$meta.assemblyid"
     label 'process_single'
 
     conda "conda-forge::sed=4.7"

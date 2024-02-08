@@ -1,6 +1,6 @@
 //modified nf-core module
 process BOWTIE2_ALIGN {
-    tag "$meta.assemblyid"
+    tag "$meta.sampleid"
     label "process_high"
 
     conda "bioconda::bowtie2=2.5.2 bioconda::samtools=1.18 conda-forge::pigz=2.6"

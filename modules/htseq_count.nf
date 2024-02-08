@@ -1,6 +1,6 @@
 //modified nf-core module
 process HTSEQ_COUNT {
-    tag "$meta.assemblyid"
+    tag "$meta.sampleid"
     label 'process_medium'
 
     conda "bioconda::htseq=2.0.3"

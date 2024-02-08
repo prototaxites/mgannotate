@@ -1,6 +1,6 @@
 // nf-core module
 process MEGAHIT {
-    tag "$meta.id"
+    tag "$meta.assemblyid"
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
