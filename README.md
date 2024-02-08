@@ -9,7 +9,7 @@ Currently, the pipeline performs the following:
 * (optional) (co-)assembly of metagenome shotgun short reads with [MEGAHIT](https://github.com/voutcn/megahit)
 * (optional) filtering of assembled contigs to remove or keep specific clades using [MMSeqs](https://github.com/soedinglab/MMseqs2/)
 * Prediction of protein-coding genes using [MetaEuk](https://github.com/soedinglab/metaeuk)
-* Annotation of assemblies using [eggnog-mapper](https://github.com/eggnogdb/eggnog-mapper)
+* Annotation of predicted genes using [eggnog-mapper](https://github.com/eggnogdb/eggnog-mapper)
 * Estimation of reads mapping to each gene in an assembly for each shotgun library using [bowtie2](https://bowtie-bio.sourceforge.net/bowtie2/index.shtml) and [HTSeq-count](https://github.com/htseq/htseq).
 * Production of count summaries for each GO in a provided list
 
@@ -28,19 +28,22 @@ nextflow run prototaxites/metannotate \
 
 #### Sequencing data
 
+Input of sequencing data is via csv files, containing paths and associated metadata:
+
+* `--reads` is a csv file with the following headers: `sampleid,assemblyid,forward_reads,reverse_reads`
+* `--assemblies` is a csv file with the following headers: `assemblyid,assembler,path`
+
+Where:
+
+* `forward_reads`, `reverse_reads`, and `path` are the paths to the forward reads fastq, reverse reads fastq, and assembly fasta, respectively. Reverse reads are optional, but if using co-assembly, all reads for a given `assemblyid` must be paired or single-end only.
+* `assemblyid` is the unique identifier of the assembly. If `--assemblies` is provided, coverage for each reads entry mapping to an `assemblyid` is estimated individually. If no `--assemblies` is provided, `assemblyid` is used to group reads for co-assembly.
+* `sampleid` is a unique identifier for each shotgun sequencing sample.
+
 Options for input are as follows:
 
 * `--reads` only: Pipeline will perform denovo assembly of shotgun reads
 * `--assemblies` only: Pipeline will annotate assemblies but not estimate gene or GO abundances
 * `--reads` and `--assemblies`: Pipeline will annotate assemblies and estimate gene and GO abundances
-
-Where:
-
-* `--reads` is a csv file with the following headers: `sampleid,assemblyid,forward_reads,reverse_reads`
-* `--assemblies` is a csv file with the following headers: `assemblyid,assembler,path`
-* `forward_reads`, `reverse_reads`, and `path` are the paths to the forward reads fastq, reverse reads fastq, and assembly fasta, respectively. Reverse reads are optional, but if using co-assembly, all reads for a given `assemblyid` must be paired or single-end only.
-* `assemblyid` is the unique identifier of the assembly. If `--assemblies` is provided, coverage for each reads entry mapping to an `assemblyid` is estimated individually. If no `--assemblies` is provided, `assemblyid` is used to group reads for co-assembly.
-* `sampleid` is a unique identifier for each shotgun sequencing sample.
 
 #### Databases
 
