@@ -16,11 +16,8 @@ workflow ANNOTATION {
         metaeuk_db
     )
 
-    ch_faa = METAEUK_EASYPREDICT.out.faa
-    ch_gff = METAEUK_EASYPREDICT.out.gff
-
-    ch_predictions = ch_faa
-        | combine(ch_gff, by: 0)
+    ch_predictions = METAEUK_EASYPREDICT.out.codon
+        | combine(METAEUK_EASYPREDICT.out.gff, by: 0)
 
     EGGNOG_MAPPER(
         ch_predictions,
@@ -28,7 +25,7 @@ workflow ANNOTATION {
     )
 
     emit:
-    gff          = ch_gff
+    gff          = METAEUK_EASYPREDICT.out.gff
     annotations  = EGGNOG_MAPPER.out.annotations
     versions     = ch_versions
 }
