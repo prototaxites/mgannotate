@@ -2,7 +2,8 @@
 // Check input samplesheet and get read channels
 //
 
-include { fromSamplesheet } from 'plugin/nf-validation'
+// Fix nf-validation at 1.1.3 as breaking changes with 2.0
+include { fromSamplesheet } from 'plugin/nf-validation@1.1.3'
 
 workflow INPUT_CHECK {
     main:

@@ -8,7 +8,6 @@ workflow COVERAGE {
     take:
     reads
     fasta
-    cluster_tsv
     annotations
     gff
     go_list
@@ -79,35 +78,28 @@ workflow COVERAGE {
             [meta_join, tsv]
         }
 
-    ch_clusters = cluster_tsv
-        | map { meta, tsv ->
-            def meta_join = meta.subMap("assemblyid")
-            [meta_join, tsv]
-        }
-
     ch_go_summary_input = ch_counts
         | combine(ch_eggnog, by: 0)
-        | combine(ch_clusters, by: 0)
-        | map { meta_join, meta, counts, eggnog, clusters -> 
-            [meta, counts, eggnog, clusters]
+        | map { meta_join, meta, counts, eggnog -> 
+            [meta, counts, eggnog ]
         }
    
-    GENES_TO_GOS(
-        ch_go_summary_input,
-        go_list
-    )
+    // GENES_TO_GOS(
+    //     ch_go_summary_input,
+    //     go_list
+    // )
 
-    GENES_TO_GOS.out.gosummary
-        | map { meta, gosummary ->
-            [ gosummary ]
-        }
-        | collect
-        | set { ch_gosummaries }
+    // GENES_TO_GOS.out.gosummary
+    //     | map { meta, gosummary ->
+    //         [ gosummary ]
+    //     }
+    //     | collect
+    //     | set { ch_gosummaries }
 
-    SUMMARISE_GOS(
-        ch_gosummaries,
-        go_list
-    )
+    // SUMMARISE_GOS(
+    //     ch_gosummaries,
+    //     go_list
+    // )
 
     emit:
     versions = ch_versions

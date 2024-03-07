@@ -1,12 +1,12 @@
 process GENES_TO_GOS {
-    tag "$meta.sampleid"
+    tag "${meta.sampleid}"
     label "process_medium"
 
     conda "conda-forge::r-base=4.3.2 conda-forge::r-tidyverse=2.0.0"
     container "docker://rocker/tidyverse:4.3.2"
 
     input:
-    tuple val(meta), path(counts), path(eggnog), path(cluster_tsv)
+    tuple val(meta), path(counts), path(eggnog)
     path(go_list)
 
     output:

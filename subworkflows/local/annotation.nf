@@ -1,4 +1,3 @@
-include { MMSEQS_EASYCLUSTER  } from '../../modules/mmseqs_easycluster'
 include { METAEUK_EASYPREDICT } from '../../modules/metaeuk_easypredict'
 include { EGGNOG_MAPPER       } from '../../modules/eggnog_mapper'
 
@@ -18,12 +17,6 @@ workflow ANNOTATION {
     )
 
     ch_predictions = METAEUK_EASYPREDICT.out.faa
-
-    MMSEQS_EASYCLUSTER(ch_predictions)
-    ch_clustered_predictions = MMSEQS_EASYCLUSTER.out.rep_fasta
-        | map { meta, fasta ->
-            [meta, fasta, []]
-        }
 
     EGGNOG_MAPPER(
         ch_clustered_predictions,
