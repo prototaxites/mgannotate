@@ -57,7 +57,6 @@ workflow MGANNOTATE {
                 COVERAGE(
                     INPUT_CHECK.out.reads,
                     ch_contigs_for_coverage,
-                    ANNOTATION.out.cluster_tsv,
                     ANNOTATION.out.annotations,
                     ANNOTATION.out.gff,
                     DATABASES.out.go_list
