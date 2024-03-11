@@ -53,7 +53,7 @@ process GENES_TO_GOS {
             "start", "end", "score", "strand", "frame", "attribute")
     ) |> 
     filter(feature == "gene") |>
-    mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)$", group = 1),
+    mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)\$", group = 1),
         gene_length = end - start
     )
 
