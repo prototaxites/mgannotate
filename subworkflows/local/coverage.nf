@@ -80,8 +80,9 @@ workflow COVERAGE {
 
     ch_go_summary_input = ch_counts
         | combine(ch_eggnog, by: 0)
-        | map { meta_join, meta, counts, eggnog -> 
-            [meta, counts, eggnog ]
+        | combine(ch_gff, by: 0)
+        | map { meta_join, meta, counts, eggnog, gff -> 
+            [meta, counts, eggnog, gff]
         }
    
     GENES_TO_GOS(
