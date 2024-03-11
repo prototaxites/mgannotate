@@ -6,7 +6,7 @@ process GENES_TO_GOS {
     container "docker://rocker/tidyverse:4.3.2"
 
     input:
-    tuple val(meta), path(counts), path(eggnog)
+    tuple val(meta), path(counts), path(eggnog), path(gff)
     path(go_list)
 
     output:
@@ -25,6 +25,7 @@ process GENES_TO_GOS {
             mutate(GO = go) |>
             summarise(Nreads = sum(Count),
                 Ngenes = n(),
+                genes_length = sum(gene_length),
                 .by = GO)
 
         if(nrow(summary) == 0) {
@@ -36,31 +37,36 @@ process GENES_TO_GOS {
 
     gos <- read_csv("${go_list}")
     counts <- read_tsv("${counts}", col_names = c("gene_name", "Count"))
-    clusters <- read_tsv("${cluster_tsv}", col_names = c("query", "gene_name"))
     eggnog <- read_tsv("${eggnog}", 
         comment = "#", 
         col_names = c("query", "seed_ortholog",	"evalue", "score", "eggNOG_OGs",
             "max_annot_lvl", "COG_category", "Description", "Preferred_name", "GO",
             "EC", "KEGG_ko", "KEGG_Pathway", "KEGG_Module",
-            "KEGG_Reaction", "KEGG_rclass",	"BRITE", "KEGG_TC",	"CAZy",	"BiGG_Reaction", "PFAMs"))
-
-    clusters <- rowwise(clusters) |> 
-        mutate(gene_name = paste(str_split_i(query, "\\\\|", 1), 
-            str_split_i(query, "\\\\|", 2), 
-            str_split_i(query, "\\\\|", 3),
-            str_split_i(query, "\\\\|", 7), 
-            sep = "|")
+            "KEGG_Reaction", "KEGG_rclass",	"BRITE", "KEGG_TC",	"CAZy",	"BiGG_Reaction", "PFAMs")
+    ) |>
+    rowwise() |>
+    mutate(split_q = str_split(query, "\\\\|"),
+        gene_name = paste(split_q[1], split_q[2], split_q[3], split_q[7], sep = "|")
         )
+    gff <- read_tsv("${gff}", 
+        col_names = c("seqname", "source", "feature", 
+            "start", "end", "score", "strand", "frame", "attribute")
+    ) |> 
+    filter(feature == "gene") |>
+    mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)$", group = 1),
+        gene_length = end - start
+    )
 
     df <- counts |>
-        left_join(clusters) |>
-        left_join(eggnog)
+        left_join(gff, by = "gene_name") |>
+        left_join(eggnog, by = "gene_name")
 
     unmapped <- df |>
         filter(str_detect(gene_name, "^__")) |>
         mutate(GO = "Unmapped") |>
         summarise(Nreads = sum(Count),
             Ngenes = NA,
+            genes_length = NA,
             .by = GO) 
 
     unannotated <- df |>
@@ -68,6 +74,7 @@ process GENES_TO_GOS {
         mutate(GO = "Unannotated") |>
         summarise(Nreads = sum(Count),
             Ngenes = n(),
+            genes_length = sum(gene_length),
             .by = GO)
 
     go_list <- pull(gos, id)

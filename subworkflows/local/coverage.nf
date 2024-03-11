@@ -84,22 +84,22 @@ workflow COVERAGE {
             [meta, counts, eggnog ]
         }
    
-    // GENES_TO_GOS(
-    //     ch_go_summary_input,
-    //     go_list
-    // )
+    GENES_TO_GOS(
+        ch_go_summary_input,
+        go_list
+    )
 
-    // GENES_TO_GOS.out.gosummary
-    //     | map { meta, gosummary ->
-    //         [ gosummary ]
-    //     }
-    //     | collect
-    //     | set { ch_gosummaries }
+    GENES_TO_GOS.out.gosummary
+        | map { meta, gosummary ->
+            [ gosummary ]
+        }
+        | collect
+        | set { ch_gosummaries }
 
-    // SUMMARISE_GOS(
-    //     ch_gosummaries,
-    //     go_list
-    // )
+    SUMMARISE_GOS(
+        ch_gosummaries,
+        go_list
+    )
 
     emit:
     versions = ch_versions
