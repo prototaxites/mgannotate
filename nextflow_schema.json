@@ -44,10 +44,6 @@
       "description": "",
       "default": "",
       "properties": {
-        "save_mmseqs_db": {
-          "type": "boolean",
-          "description": "Save download MMSeqs2 databases?"
-        },
         "mmseqs_func_db": {
           "type": "string",
           "description": "Name of an MMSeqs2 database for functional annotation"
@@ -70,6 +66,14 @@
           "type": "string",
           "description": "Path to Eggnog-Mapper data directoy.",
           "format": "directory-path"
+        },
+        "save_mmseqs_db": {
+          "type": "boolean",
+          "description": "Save download MMSeqs2 databases?"
+        },
+        "save_eggnog_db": {
+          "type": "boolean",
+          "description": "If the eggnog-mapper database is downloaded automatically, save the output database to the output folder."
         }
       }
     },

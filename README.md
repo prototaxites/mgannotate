@@ -54,7 +54,7 @@ The pipeline requires three databases for full functionality. If they are not pr
 * Functional database (MMSeqs format):
     - This should be an MMSeqs database to use for gene predictions with MetaEuk. Can be provided either as a string with `--mmseqs_func_db` with the names of one of the databases available at the [MMSeqs2 documentation](https://github.com/soedinglab/MMseqs2/wiki#downloading-databases), in which case it is downloaded, or as a path to a pre-downloaded local database with `--mmseqs_func_db_local`. If the eggnog-mapper MMSeqs2 database has been pre-downloaded, the path to this could also be provided.
 * eggnog-mapper database:
-    - Path to a directoy containing the eggnog-mapper database. Presently will not be downloaded automatically by the pipeline. Can be downloaded following the instructions provided in the [eggnog-mapper documentation](https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.12#user-content-Setup). When downloading the database, make sure to enable downloading the MMSeqs2 database with the `-M` flag as this is what is presently use by the pipeline.
+    - Path to a directory containing the eggnog-mapper database. If not provided, the eggnog-mapper database will be automatically downloaded - this can be saved by supplying `--save_eggnog_db`. Can be downloaded following the instructions provided in the [eggnog-mapper documentation](https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.12#user-content-Setup). When downloading the database, make sure to enable downloading the MMSeqs2 database with the `-M` flag as this is what is presently use by the pipeline. 
 
 ## Pipeline flags
 

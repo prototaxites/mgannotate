@@ -1,5 +1,6 @@
 include { MMSEQS_DATABASES as MMSEQS_DATABASES_TAXONOMY   } from '../../modules/mmseqs_databases'
 include { MMSEQS_DATABASES as MMSEQS_DATABASES_FUNCTION   } from '../../modules/mmseqs_databases'
+include { EGGNOG_MAPPER_DATABASE                          } from '../../modules/eggnog_mapper_db'
 
 workflow DATABASES {
     main:
@@ -55,7 +56,8 @@ workflow DATABASES {
             | first
             | set { ch_eggnog_db }
     } else {
-        ch_eggnog_db = Channel.empty()
+        EGGNOG_MAPPER_DATABASE()
+        ch_eggnog_db = EGGNOG_MAPPER_DATABASE.out.database
     }
 
     if(params.go_list) {
