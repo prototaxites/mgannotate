@@ -4,12 +4,12 @@ def summary_params = paramsSummaryMap(workflow)
 WorkflowMgannotate.initialise(params, log)
 
 // Import subworkflows
-include { INPUT_CHECK    } from '../subworkflows/local/input_check'
-include { DATABASES      } from '../subworkflows/local/databases'
-include { ASSEMBLY       } from '../subworkflows/local/assembly'
-include { FILTER_CONTIGS } from '../subworkflows/local/filter_contigs'
-include { ANNOTATION     } from '../subworkflows/local/annotation'
-include { COVERAGE       } from '../subworkflows/local/coverage'
+include { INPUT_CHECK    } from '../subworkflows/input_check'
+include { DATABASES      } from '../subworkflows/databases'
+include { ASSEMBLY       } from '../subworkflows/assembly'
+include { FILTER_CONTIGS } from '../subworkflows/filter_contigs'
+include { ANNOTATION     } from '../subworkflows/annotation'
+include { COVERAGE       } from '../subworkflows/coverage'
 
 workflow MGANNOTATE {
 
