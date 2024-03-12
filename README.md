@@ -6,12 +6,12 @@
 
 Currently, the pipeline performs the following: 
 
-* (optional) (co-)assembly of metagenome shotgun short reads with [MEGAHIT](https://github.com/voutcn/megahit)
-* (optional) filtering of assembled contigs to remove or keep specific clades using [MMSeqs](https://github.com/soedinglab/MMseqs2/)
-* Prediction of protein-coding genes using [MetaEuk](https://github.com/soedinglab/metaeuk)
-* Annotation of predicted genes using [eggnog-mapper](https://github.com/eggnogdb/eggnog-mapper)
-* Estimation of reads mapping to each gene in an assembly for each shotgun library using [bowtie2](https://bowtie-bio.sourceforge.net/bowtie2/index.shtml) and [HTSeq-count](https://github.com/htseq/htseq).
-* Production of count summaries for each GO in a provided list
+* (optional) (co-)assembles metagenome shotgun short reads with [MEGAHIT](https://github.com/voutcn/megahit)
+* (optional) filters assembled contigs to remove or keep specific clades using [MMSeqs](https://github.com/soedinglab/MMseqs2/)
+* Predicts of protein-coding genes using [MetaEuk](https://github.com/soedinglab/metaeuk)
+* Annotates predicted genes using [eggnog-mapper](https://github.com/eggnogdb/eggnog-mapper)
+* Counts reads mapping to each gene in an assembly for each shotgun library using [bowtie2](https://bowtie-bio.sourceforge.net/bowtie2/index.shtml) and [HTSeq-count](https://github.com/htseq/htseq).
+* Produces count summaries for each GO in a provided list
 
 ## Usage
 
@@ -72,10 +72,8 @@ The output folder (`--outdir`) contains the following directories:
 * `annotations`:
     - `metaeuk/{assemblyid}/`: MetaEuk protein and nucleotide fasta files of predicted genes, and GFF files
     - `eggnog-mapper/{assemblyid}/`: eggnog-mapper annotation files
-* `coverage`:
-    - `counts`: per-sample tsv files of gene counts for the associated assembly
-    - `annotation_counts`: eggnog-mapper output with associated gene counts, and GO summary CSV files
-    - `GO_df_long.csv`: GO summaries for all samples merged into one summary file
+* `coverage`: eggnog-mapper output with tagged with additional information on read counts and GFF data, and GO summary CSV files
+* `GO_df_long.csv`: GO summaries for all samples merged into one summary file
 * `taxonomy/{assemblyid}_taxdb/`: MMseqs taxonomy DBs for the unfiltered assemblies.
 
 ## Attribution
