@@ -1,5 +1,5 @@
 
-include { MEGAHIT } from '../../modules/megahit'
+include { MEGAHIT } from '../modules/megahit'
 
 workflow ASSEMBLY {
     take:

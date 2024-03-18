@@ -1,6 +1,6 @@
-include { MMSEQS_DATABASES as MMSEQS_DATABASES_TAXONOMY   } from '../../modules/mmseqs_databases'
-include { MMSEQS_DATABASES as MMSEQS_DATABASES_FUNCTION   } from '../../modules/mmseqs_databases'
-include { EGGNOG_MAPPER_DATABASE                          } from '../../modules/eggnog_mapper_db'
+include { MMSEQS_DATABASES as MMSEQS_DATABASES_TAXONOMY   } from '../modules/mmseqs_databases'
+include { MMSEQS_DATABASES as MMSEQS_DATABASES_FUNCTION   } from '../modules/mmseqs_databases'
+include { EGGNOG_MAPPER_DATABASE                          } from '../modules/eggnog_mapper_db'
 
 workflow DATABASES {
     main:

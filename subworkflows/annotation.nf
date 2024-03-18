@@ -1,5 +1,5 @@
-include { METAEUK_EASYPREDICT } from '../../modules/metaeuk_easypredict'
-include { EGGNOG_MAPPER       } from '../../modules/eggnog_mapper'
+include { METAEUK_EASYPREDICT } from '../modules/metaeuk_easypredict'
+include { EGGNOG_MAPPER       } from '../modules/eggnog_mapper'
 
 workflow ANNOTATION {
     take:

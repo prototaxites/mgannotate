@@ -1,8 +1,8 @@
-include { MMSEQS_CREATEDB      } from '../../modules/mmseqs_createdb'
-include { MMSEQS_TAXONOMY      } from '../../modules/mmseqs_taxonomy'
-include { MMSEQS_FILTERTAXDB   } from '../../modules/mmseqs_filtertaxdb'
-include { MMSEQS_CREATESUBDB   } from '../../modules/mmseqs_createsubdb'
-include { MMSEQS_CONVERT2FASTA } from '../../modules/mmseqs_convert2fasta'
+include { MMSEQS_CREATEDB      } from '../modules/mmseqs_createdb'
+include { MMSEQS_TAXONOMY      } from '../modules/mmseqs_taxonomy'
+include { MMSEQS_FILTERTAXDB   } from '../modules/mmseqs_filtertaxdb'
+include { MMSEQS_CREATESUBDB   } from '../modules/mmseqs_createsubdb'
+include { MMSEQS_CONVERT2FASTA } from '../modules/mmseqs_convert2fasta'
 
 workflow FILTER_CONTIGS {
     take:
