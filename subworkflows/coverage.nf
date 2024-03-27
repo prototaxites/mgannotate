@@ -29,8 +29,8 @@ workflow COVERAGE {
         ch_reads_index = reads 
             | map { meta, reads ->
                 def meta_join = [assemblyid: "genes"]
-                def meta = meta + [assemblyid: "genes"]
-                [ meta_join, meta, reads ]
+                def meta_new = meta + [assemblyid: "genes"]
+                [ meta_join, meta_new, reads ]
             }
             | combine(ch_index, by: 0)
             | map { meta_join, meta, reads, index ->
