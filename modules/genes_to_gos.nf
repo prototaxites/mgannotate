@@ -8,6 +8,7 @@ process GENES_TO_GOS {
     input:
     tuple val(meta), path(counts), path(eggnog), path(gff)
     path(go_list)
+    val(input_is_clustered)
 
     output:
     tuple val(meta), path("*.annotations_counts.csv") , emit: annotations_counts
@@ -15,6 +16,7 @@ process GENES_TO_GOS {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def clustered = input_is_clustered ? "clustered" : "not_clustered"
     """
     #!/usr/bin/env Rscript
 
@@ -35,6 +37,7 @@ process GENES_TO_GOS {
         return(summary)
     }
 
+    clustered <- ifelse("${input_is_clustered}" == "clustered", TRUE, FALSE)
     gos <- read_csv("${go_list}")
     counts <- read_tsv("${counts}", col_names = c("gene_name", "Count"))
     eggnog <- read_tsv("${eggnog}", 
@@ -43,23 +46,35 @@ process GENES_TO_GOS {
             "max_annot_lvl", "COG_category", "Description", "Preferred_name", "GO",
             "EC", "KEGG_ko", "KEGG_Pathway", "KEGG_Module",
             "KEGG_Reaction", "KEGG_rclass",	"BRITE", "KEGG_TC",	"CAZy",	"BiGG_Reaction", "PFAMs")
-    ) |>
-    rowwise() |>
-    mutate(split_q = str_split(query, "\\\\|"),
-        gene_name = paste(split_q[1], split_q[2], split_q[3], split_q[7], sep = "|")
+    )
+
+    if(clustered == TRUE) {
+        eggnog <- rowwise(eggnog) |>
+        mutate(split_q = str_split(query, "\\\\|"),
+            gene_name = paste(split_q[1], split_q[2], split_q[3], split_q[7], sep = "|")
         )
+    } else {
+        eggnog <- mutate(eggnog, gene_name = query)
+    }
+
     gff <- read_tsv("${gff}", 
         col_names = c("seqname", "source", "feature", 
             "start", "end", "score", "strand", "frame", "attribute")
-    ) |> 
-    filter(feature == "gene") |>
-    mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)\$", group = 1),
-        gene_length = end - start
-    )
+        ) |> 
+        filter(feature == "gene") |>
+        mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)\$", group = 1),
+            gene_length = end - start
+        )
 
-    df <- counts |>
-        left_join(gff, by = "gene_name") |>
-        left_join(eggnog, by = "gene_name")
+    if(clustered == TRUE) {
+        df <- counts |>
+            left_join(eggnog, by = "gene_name") |>
+            mutate(gene_length = NA)
+    } else {
+        df <- counts |>
+            left_join(gff, by = "gene_name") |>
+            left_join(eggnog, by = "gene_name")
+    }
 
     unmapped <- df |>
         filter(str_detect(gene_name, "^__")) |>
