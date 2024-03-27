@@ -52,7 +52,7 @@ workflow ANNOTATION {
         eggnog_db
     )
 
-    ch_contigs = params.cluster_genes ? MMSEQS_EASYCLUSTER(ch_predictions_to_cluster).out.rep_fasta : contigs
+    ch_contigs = params.cluster_genes ? MMSEQS_EASYCLUSTER.out.rep_fasta : contigs
 
     emit:
     contigs      = ch_contigs
