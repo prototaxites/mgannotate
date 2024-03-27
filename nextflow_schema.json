@@ -35,6 +35,10 @@
           "format": "directory-path",
           "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
           "fa_icon": "fas fa-folder-open"
+        },
+        "assemblies_are_genes": {
+          "type": "boolean",
+          "description": "If the input contigs are already gene predictions, this can be specified to skip gene prediction."
         }
       }
     },
@@ -112,6 +116,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable annotation of genes"
+        },
+        "cluster_genes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Concatenate all contigs across all assemblies and cluster them prior to annotation."
         },
         "mmseqs_cluster_options": {
           "type": "string",
