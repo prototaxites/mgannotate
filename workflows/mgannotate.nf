@@ -22,7 +22,7 @@ workflow MGANNOTATE {
     DATABASES()
     ch_versions = ch_versions.mix(DATABASES.out.versions)
 
-    if(!assemblies_are_genes) {
+    if(!params.assemblies_are_genes) {
         if(params.reads && !params.assemblies) {
             ASSEMBLY(
                 INPUT_CHECK.out.reads

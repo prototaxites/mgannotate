@@ -12,7 +12,7 @@ workflow ANNOTATION {
     main:
     ch_versions = Channel.empty()
 
-    if(!assemblies_are_genes) {
+    if(!params.assemblies_are_genes) {
         METAEUK_EASYPREDICT ( 
             contigs, 
             metaeuk_db
