@@ -1,5 +1,6 @@
 include { BOWTIE2_BUILD           } from '../modules/bowtie2_build'
-include { BOWTIE2_ALIGN           } from '../modules/bowtie2_align.nf'                                                                                                                                 
+include { BOWTIE2_ALIGN           } from '../modules/bowtie2_align.nf'                                         
+include { COVERM_CONTIGS          } from '../modules/coverm_contigs'                                                                                        
 include { HTSEQ_COUNT             } from '../modules/htseq_count.nf'                                                                                                                                 
 include { GENES_TO_GOS            } from '../modules/genes_to_gos'                                                                                                                                 
 include { STROBEALIGN_CREATEINDEX } from '../modules/strobealign_createindex'                                                                                                                                 
