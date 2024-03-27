@@ -20,7 +20,7 @@ workflow ANNOTATION {
         ch_versions = ch_versions.mix(METAEUK_EASYPREDICT.out.versions)
         ch_predictions = METAEUK_EASYPREDICT.out.codon
     } else {
-        ch_predictions = ch_contigs
+        ch_predictions = contigs
     }
 
     if(params.cluster_genes) {
@@ -52,7 +52,10 @@ workflow ANNOTATION {
         eggnog_db
     )
 
+    ch_contigs = params.cluster_genes ? MMSEQS_EASYCLUSTER(ch_predictions_to_cluster).out.rep_fasta : contigs
+
     emit:
+    contigs      = ch_contigs
     gff          = params.assemblies_are_genes ? [] : METAEUK_EASYPREDICT.out.gff
     annotations  = EGGNOG_MAPPER.out.annotations
     versions     = ch_versions

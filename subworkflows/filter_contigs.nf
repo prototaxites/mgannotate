@@ -68,7 +68,6 @@ workflow FILTER_CONTIGS {
     MMSEQS_CONVERT2FASTA( ch_filtered_assemblies ) 
 
     emit:
-    filtered_mmseqs     = ch_filtered_assemblies
     filtered_fasta      = MMSEQS_CONVERT2FASTA.out.fasta
     versions            = ch_versions
 }

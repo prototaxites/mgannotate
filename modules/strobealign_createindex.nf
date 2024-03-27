@@ -15,6 +15,7 @@ process STROBEALIGN_CREATEINDEX {
     path "versions.yml"           , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     """
     strobealign \\
         --create-index \\

@@ -39,7 +39,7 @@ workflow DATABASES {
             }
         | first
         ch_versions = ch_versions.mix(MMSEQS_DATABASES_FUNCTION.out.versions)
-    } else if (params.mmseqs_tax_db_local) {
+    } else if (params.mmseqs_func_db_local) {
         ch_mmseqs_func_db = Channel.fromPath("${params.mmseqs_func_db_local}")
             | map { path ->
                 def basename = file("$path/*.lookup", followLinks: true).baseName[0]

@@ -12,7 +12,8 @@ process COVERM_CONTIGS {
 
     output:
     tuple val(meta), path("*.txt"), emit: coverage
-
+    path "versions.yml"           , emit: versions
+    
     script:
     def prefix = task.args.prefix ?: "${meta.id}"
     def ref = reference.replace("\\.r.*", "")

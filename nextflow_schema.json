@@ -119,7 +119,7 @@
         },
         "cluster_genes": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Concatenate all contigs across all assemblies and cluster them prior to annotation."
         },
         "mmseqs_cluster_options": {

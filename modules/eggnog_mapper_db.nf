@@ -19,6 +19,7 @@ process EGGNOG_MAPPER_DATABASE {
 
     download_eggnog_data.py  \\
         --data_dir ${prefix} \\
+        -y \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml

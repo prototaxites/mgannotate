@@ -37,19 +37,17 @@ workflow MGANNOTATE {
                 ch_assemblies,
                 DATABASES.out.tax_db
             )
-            ch_versions               = ch_versions.mix(FILTER_CONTIGS.out.versions)
-            ch_contigs_for_annotation = FILTER_CONTIGS.out.filtered_mmseqs
-            ch_contigs_for_coverage   = FILTER_CONTIGS.out.filtered_fasta
+            ch_versions = ch_versions.mix(FILTER_CONTIGS.out.versions)
+            ch_contigs  = FILTER_CONTIGS.out.filtered_fasta
         } else {
-            ch_contigs_for_annotation = ch_assemblies
-            ch_contigs_for_coverage   = ch_assemblies
+            ch_contigs  = ch_assemblies
         }
     }
 
-    if((params.mmseqs_func_db || params.mmseqs_func_db_local) && params.eggnog_db) {
+    if((params.mmseqs_func_db || params.mmseqs_func_db_local)) {
         if(params.enable_annotation) {
             ANNOTATION(
-                ch_contigs_for_annotation,
+                ch_contigs,
                 DATABASES.out.func_db,
                 DATABASES.out.eggnog_db
             )
@@ -58,7 +56,7 @@ workflow MGANNOTATE {
             if(params.enable_coverage && params.go_list) {
                 COVERAGE(
                     INPUT_CHECK.out.reads,
-                    ch_contigs_for_coverage,
+                    ANNOTATION.out.contigs,
                     ANNOTATION.out.annotations,
                     ANNOTATION.out.gff,
                     DATABASES.out.go_list
