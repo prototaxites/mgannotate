@@ -8,8 +8,8 @@ process EGGNOG_MAPPER_DATABASE {
         'biocontainers/eggnog-mapper:2.1.12--pyhdfd78af_0' }"
 
     output:
-    tuple val(meta), path("${prefix}/") , emit: database
-    path "versions.yml"                 , emit: versions
+    path("${prefix}/")  , emit: database
+    path "versions.yml" , emit: versions
 
     script:
     def args = task.ext.args ?: ''
