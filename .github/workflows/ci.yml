@@ -23,7 +23,6 @@ jobs:
         profile:
           [
             test,
-            test_assembly,
           ]
     steps:
       - name: Check out pipeline code

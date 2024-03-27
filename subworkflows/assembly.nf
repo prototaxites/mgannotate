@@ -16,7 +16,6 @@ workflow ASSEMBLY {
         }
         | groupTuple(by: 0)
 
-
     ch_reads
         | map { meta, reads ->
             meta.subMap("assemblyid")
