@@ -61,8 +61,8 @@ The pipeline requires three databases for full functionality. If they are not pr
 Some important pipeline flags to enable specific modes:
 
 * `--filter_contigs`: Enable taxonomic filtering of assembly contigs using the taxids specified in `--filter_taxon_list`.
-* `--enable_annotation`: (on by default) enable annotation of assemblies using MetaEuk and eggnog-mapper.
-* `--enable_coverage`: (on by default) enable read counting of genes using bowtie2 and HTSeq-count.
+* `--cluster_genes`: Before annotation, take the gene predictions from all assemblies and cluster them together into one gene catalogue. Reads mapping to the genes are then counted using CoverM.
+* `--assemblies_are_genes`: It is possible to skip gene prediction and provide a fasta file of gene sequences instead of metagenome assemblies. Must be used in conjunction with `--cluster_genes` as there is no GFF file to map with using HTSeq-Count.
 
 ## Pipeline output
 

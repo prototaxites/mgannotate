@@ -23,6 +23,7 @@ jobs:
         profile:
           [
             test,
+            test_cluster,
           ]
     steps:
       - name: Check out pipeline code
