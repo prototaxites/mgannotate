@@ -13,7 +13,7 @@ process SED_FASTA_HEADER {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def sed_arg = task.ext.sed_arg ?: "${meta.id}"
     """
-    sed s/^>/>${sed_arg}_/g ${fasta} > ${prefix}.renamed.fasta
+    sed "s/^>/>${sed_arg}_/g" ${fasta} > ${prefix}.renamed.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -119,12 +119,12 @@
         },
         "cluster_genes": {
           "type": "boolean",
-          "default": false,
           "description": "Concatenate all contigs across all assemblies and cluster them prior to annotation."
         },
         "mmseqs_cluster_options": {
           "type": "string",
-          "description": "Mmseqs command-line arguments for the mmseqs cluster call."
+          "description": "Mmseqs command-line arguments for the mmseqs cluster call.",
+          "default": "--min-seq-id 0.95 --cov-mode 1 -c 0.9"
         }
       }
     },
