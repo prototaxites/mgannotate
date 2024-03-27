@@ -1,7 +1,6 @@
 name: nf-core CI
 # This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
 on:
-  push:
   pull_request:
   release:
     types: [published]
@@ -17,7 +16,7 @@ jobs:
   test:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: "{% raw %}${{{% endraw %} github.event_name != 'push' || (github.event_name == 'push' && github.repository == '{{ name }}') {% raw %}}}{% endraw %}"
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'prototaxites/mgannotate') }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
