@@ -28,7 +28,7 @@ process MMSEQS_EASYCLUSTER {
         ${prefix} \\
         tmp/ \\
         --threads ${task.cpus} \\
-        ${args} \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
