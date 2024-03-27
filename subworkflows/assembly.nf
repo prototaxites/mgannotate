@@ -1,5 +1,6 @@
 
-include { MEGAHIT } from '../modules/megahit'
+include { MEGAHIT   } from '../modules/megahit'
+include { CAT_FASTQ } from '../modules/cat_fastq'
 
 workflow ASSEMBLY {
     take:
