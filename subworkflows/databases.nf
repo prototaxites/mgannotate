@@ -9,46 +9,46 @@ workflow DATABASES {
 
     if (params.mmseqs_tax_db) {
         MMSEQS_DATABASES_TAXONOMY ( params.mmseqs_tax_db )
-        MMSEQS_DATABASES_TAXONOMY.out.database
+        ch_mmseqs_tax_db = MMSEQS_DATABASES_TAXONOMY.out.database
             | map { path ->
                 def basename = file("$path/*.lookup", followLinks: true).baseName[0]
                 def meta = [id: "tax_db", basename: basename]
-                [meta, path]
+                [ meta, path ]
             }
             | first
-            | set { ch_mmseqs_tax_db }
         ch_versions = ch_versions.mix(MMSEQS_DATABASES_TAXONOMY.out.versions)
     } else if (params.mmseqs_tax_db_local) {
-        Channel.fromPath("${params.mmseqs_tax_db_local}")
+        ch_mmseqs_tax_db = Channel.fromPath("${params.mmseqs_tax_db_local}")
             | map { path ->
                 def basename = file("$path/*.lookup", followLinks: true).baseName[0]
                 def meta = [id: "tax_db", basename: basename]
-                [meta, path]
+                [ meta, path ]
             }
             | first
-            | set { ch_mmseqs_tax_db }
+    } else {
+        ch_mmseqs_tax_db = Channel.empty()
     }
 
     if (params.mmseqs_func_db) {
         MMSEQS_DATABASES_FUNCTION ( params.mmseqs_func_db )
-        MMSEQS_DATABASES_FUNCTION.out.database
+        ch_mmseqs_func_db = MMSEQS_DATABASES_FUNCTION.out.database
         | map { path ->
                 def basename = file("$path/*.lookup", followLinks: true).baseName[0]
                 def meta = [id: "func_db", basename: basename]
-                [meta, path]
+                [ meta, path ]
             }
         | first
-        | set { ch_mmseqs_func_db }
         ch_versions = ch_versions.mix(MMSEQS_DATABASES_FUNCTION.out.versions)
-    } else if (params.mmseqs_tax_db_local) {
-        Channel.fromPath("${params.mmseqs_func_db_local}")
+    } else if (params.mmseqs_func_db_local) {
+        ch_mmseqs_func_db = Channel.fromPath("${params.mmseqs_func_db_local}")
             | map { path ->
                 def basename = file("$path/*.lookup", followLinks: true).baseName[0]
                 def meta = [id: "func_db", basename: basename]
-                [meta, path]
+                [ meta, path ]
             }
             | first
-            | set { ch_mmseqs_func_db }
+    } else {
+        ch_mmseqs_func_db = Channel.empty()
     }
     
     if(params.eggnog_db) {
