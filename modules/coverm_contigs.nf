@@ -23,6 +23,7 @@ process COVERM_CONTIGS {
 
     coverm contig \\
         --threads ${task.cpus} \\
+        --bam-files ${bam} \\
         --reference \${REF/%.r*.sti} \\
         ${args} \\ 
         --output-file ${prefix}.txt
