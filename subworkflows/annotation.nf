@@ -1,3 +1,4 @@
+include { CAT_FASTA           } from '../modules/cat_fasta'
 include { EGGNOG_MAPPER       } from '../modules/eggnog_mapper'
 include { MMSEQS_EASYCLUSTER  } from '../modules/mmseqs_easycluster'
 include { METAEUK_EASYPREDICT } from '../modules/metaeuk_easypredict'
@@ -25,16 +26,17 @@ workflow ANNOTATION {
 
     if(params.cluster_genes) {
         ch_predictions_to_name = ch_predictions
-        SED_FASTA_HEADER(ch_predictions_to_name)
-        ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
-        
-        ch_predictions_to_cluster = SED_FASTA_HEADER.out.fasta
             | map { meta, fasta -> [ fasta ] }
             | collect
             | map { fastas -> 
                 def meta = [assemblyid: "genes"]
                 [ meta, fastas ]
             }
+
+        CAT_FASTA(ch_predictions_to_name)
+        ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
+
+        ch_predictions_to_cluster = CAT_FASTA.out.fasta
 
         MMSEQS_EASYCLUSTER(ch_predictions_to_cluster)
         ch_versions = ch_versions.mix(MMSEQS_EASYCLUSTER.out.versions)
