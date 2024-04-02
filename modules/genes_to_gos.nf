@@ -39,7 +39,13 @@ process GENES_TO_GOS {
 
     clustered <- ifelse("${input_is_clustered}" == "clustered", TRUE, FALSE)
     gos <- read_csv("${go_list}")
-    counts <- read_tsv("${counts}", col_names = c("gene_name", "Count"))
+
+    if(clustered == TRUE) {
+        counts <- read_tsv("${counts}") |> select(gene_name = 1, Count = 2)
+    } else {
+        counts <- read_tsv("${counts}", col_names = c("gene_name", "Count"))
+    }
+    
     eggnog <- read_tsv("${eggnog}", 
         comment = "#", 
         col_names = c("query", "seed_ortholog",	"evalue", "score", "eggNOG_OGs",
