@@ -11,8 +11,8 @@ process STROBEALIGN_CREATEINDEX {
     tuple val(meta), path(fasta)
 
     output:
-    tuple val(meta), path("*.sti"), emit: index
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.sti"), path(fasta), emit: index
+    path "versions.yml"                        , emit: versions
 
     script:
     def args = task.ext.args ?: ''

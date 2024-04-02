@@ -22,9 +22,9 @@ workflow COVERAGE {
         ch_versions = ch_versions.mix(STROBEALIGN_CREATEINDEX.out.versions)
 
         ch_index = STROBEALIGN_CREATEINDEX.out.index
-            | map { meta, index ->
+            | map { meta, index, fasta ->
                 def meta_join = [assemblyid: "genes"]
-                [ meta_join, index ]
+                [ meta_join, index, fasta ]
             }
 
         ch_reads_index = reads 
@@ -34,8 +34,8 @@ workflow COVERAGE {
                 [ meta_join, meta_new, reads ]
             }
             | combine(ch_index, by: 0)
-            | map { meta_join, meta, reads, index ->
-                [ meta, reads, index ]
+            | map { meta_join, meta, reads, index, fasta ->
+                [ meta, reads, index, fasta ]
             }
 
         COVERM_CONTIGS(ch_reads_index)
