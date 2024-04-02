@@ -78,7 +78,8 @@ process GENES_TO_GOS {
     if(clustered == TRUE) {
         df <- counts |>
             left_join(eggnog, by = "gene_name") |>
-            mutate(gene_length = NA)
+            mutate(gene_length = NA) |>
+            select(-query)
     } else {
         df <- counts |>
             left_join(gff, by = "gene_name") |>
