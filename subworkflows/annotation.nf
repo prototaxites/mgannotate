@@ -34,7 +34,7 @@ workflow ANNOTATION {
             }
 
         CAT_FASTA(ch_predictions_to_name)
-        ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
+        //ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
 
         ch_predictions_to_cluster = CAT_FASTA.out.fasta
 
