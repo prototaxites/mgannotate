@@ -25,13 +25,14 @@ process COVERM_CONTIGS {
         coverm contig \\
             --threads ${task.cpus} \\
             --single ${reads} \\
+            --strobealign-use-index \\
             --reference \${REF/%.r*.sti} \\
             ${args} \\ 
             --output-file ${prefix}.txt
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            strobealign: \$(strobealign --version)
+            coverm: \$(coverm --version | sed 's/coverm //')
         END_VERSIONS
         """
     } else {
@@ -48,7 +49,7 @@ process COVERM_CONTIGS {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            strobealign: \$(strobealign --version)
+            coverm: \$(coverm --version | sed 's/coverm //')
         END_VERSIONS
         """
     }
