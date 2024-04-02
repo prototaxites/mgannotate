@@ -38,7 +38,7 @@ process COVERM_CONTIGS {
     } else {
         """
         TMPDIR=.
-        REF=${reference}
+        REF=${sti}
 
         coverm contig \\
             --threads ${task.cpus} \\
