@@ -20,7 +20,7 @@ process COVERM_CONTIGS {
     TMPDIR=.
     REF=${reference}
 
-    coverm contigs \\
+    coverm contig \\
         --threads ${task.cpus} \\
         --reference \${REF/%.r*.sti} \\
         ${args} \\ 

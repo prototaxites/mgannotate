@@ -38,8 +38,6 @@ workflow COVERAGE {
                 [ meta, reads, index ]
             }
 
-        ch_reads_index.view()
-
         COVERM_CONTIGS(ch_reads_index)
         ch_versions = ch_versions.mix(COVERM_CONTIGS.out.versions)
 
