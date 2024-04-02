@@ -56,12 +56,12 @@ process GENES_TO_GOS {
     )
 
     if(clustered == TRUE) {
+        eggnog <- mutate(eggnog, gene_name = query)
+    } else {
         eggnog <- rowwise(eggnog) |>
         mutate(split_q = str_split(query, "\\\\|"),
             gene_name = paste(split_q[1], split_q[2], split_q[3], split_q[7], sep = "|")
         )
-    } else {
-        eggnog <- mutate(eggnog, gene_name = query)
     }
 
     if("${gff_exists}" == "gff_exists") {
@@ -85,13 +85,23 @@ process GENES_TO_GOS {
             left_join(eggnog, by = "gene_name")
     }
 
-    unmapped <- df |>
-        filter(str_detect(gene_name, "^__")) |>
-        mutate(GO = "Unmapped") |>
-        summarise(Nreads = sum(Count),
-            Ngenes = NA,
-            genes_length = NA,
-            .by = GO) 
+    if(clustered == TRUE) {
+        unmapped <- counts |>
+            summarise(Count = sum(Count)) |>
+            mutate(GO = "Unmapped", 
+                Nreads = ${meta.nreads} - Count,
+                Ngenes = NA,
+                genes_length = NA
+                )
+    } else {
+        unmapped <- df |>
+            filter(str_detect(gene_name, "^__")) |>
+            mutate(GO = "Unmapped") |>
+            summarise(Nreads = sum(Count),
+                Ngenes = NA,
+                genes_length = NA,
+                .by = GO) 
+    }
 
     unannotated <- df |>
         filter(is.na(GO), !str_detect(gene_name, "^__")) |>
