@@ -47,11 +47,7 @@ workflow COVERAGE {
                 [ meta_join, meta, txt ]
             }
         
-        ch_gff = gff
-            | map { meta, gff ->
-                def meta_join = meta.subMap("assemblyid")
-                [ meta_join, gff ]
-            }
+        ch_gff = Channel.of([assemblyid: "genes", []])
 
     } else {
         BOWTIE2_BUILD(fasta)

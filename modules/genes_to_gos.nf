@@ -17,6 +17,7 @@ process GENES_TO_GOS {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def clustered = input_is_clustered ? "clustered" : "not_clustered"
+    def gff_exists = gff ?: "gff_exists" : "gff_absent"
     """
     #!/usr/bin/env Rscript
 
@@ -63,14 +64,16 @@ process GENES_TO_GOS {
         eggnog <- mutate(eggnog, gene_name = query)
     }
 
-    gff <- read_tsv("${gff}", 
-        col_names = c("seqname", "source", "feature", 
-            "start", "end", "score", "strand", "frame", "attribute")
-        ) |> 
-        filter(feature == "gene") |>
-        mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)\$", group = 1),
-            gene_length = end - start
-        )
+    if(${gff_exists} == "gff_exists") {
+        gff <- read_tsv("${gff}", 
+            col_names = c("seqname", "source", "feature", 
+                "start", "end", "score", "strand", "frame", "attribute")
+            ) |> 
+            filter(feature == "gene") |>
+            mutate(gene_name = str_extract(attribute, ".*TCS_ID=(.*)\$", group = 1),
+                gene_length = end - start
+            )
+    }
 
     if(clustered == TRUE) {
         df <- counts |>
