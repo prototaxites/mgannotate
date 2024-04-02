@@ -17,7 +17,7 @@ process GENES_TO_GOS {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def clustered = input_is_clustered ? "clustered" : "not_clustered"
-    def gff_exists = gff ?: "gff_exists" : "gff_absent"
+    def gff_exists = gff ? "gff_exists" : "gff_absent"
     """
     #!/usr/bin/env Rscript
 

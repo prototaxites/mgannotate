@@ -46,6 +46,8 @@ workflow COVERAGE {
                 def meta_join = meta.subMap("assemblyid")
                 [ meta_join, meta, txt ]
             }
+        
+        ch_gff = Channel.of([[assemblyid: "genes"], []])
 
     } else {
         BOWTIE2_BUILD(fasta)
@@ -107,20 +109,12 @@ workflow COVERAGE {
             [meta_join, tsv]
         }
 
-    if(params.cluster_genes) {
-        ch_go_summary_input = ch_counts
-            | combine(ch_eggnog, by: 0)
-            | map { meta_join, meta, counts, eggnog -> 
-                [ meta, counts, eggnog, [] ]
-            }
-    } else {
-        ch_go_summary_input = ch_counts
-            | combine(ch_eggnog, by: 0)
-            | combine(ch_gff, by: 0)
-            | map { meta_join, meta, counts, eggnog, gff -> 
-                [ meta, counts, eggnog, gff ]
-            }
-    }
+    ch_go_summary_input = ch_counts
+        | combine(ch_eggnog, by: 0)
+        | combine(ch_gff, by: 0)
+        | map { meta_join, meta, counts, eggnog, gff -> 
+            [meta, counts, eggnog, gff]
+        }
    
     GENES_TO_GOS(
         ch_go_summary_input,
