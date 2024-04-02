@@ -16,13 +16,13 @@ process COVERM_CONTIGS {
     
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def ref = reference.replace("\\.r.*", "")
     """
     TMPDIR=.
+    REF=${reference}
 
     coverm contigs \\
         --threads ${task.cpus} \\
-        --reference ${ref} \\
+        --reference \${REF/%.r*.sti} \\
         ${args} \\ 
         --output-file ${prefix}.txt
 
