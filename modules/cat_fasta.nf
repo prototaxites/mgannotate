@@ -7,11 +7,11 @@ process CAT_FASTA {
         'nf-core/ubuntu:20.04' }"
 
     input:
-    tuple val(meta), path(reads, stageAs: "input*/*")
+    tuple val(meta), path(fastas)
 
     output:
-    tuple val(meta), path("*.merged.fastq.gz"), emit: reads
-    path "versions.yml"                       , emit: versions
+    tuple val(meta), path("*.merged.fasta"), emit: fasta
+    path "versions.yml"                    , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,7 +21,7 @@ process CAT_FASTA {
     def prefix = task.ext.prefix ?: "${meta.id}"
     //def readList = reads instanceof List ? reads.collect{ it.toString() } : [reads.toString()]
     """
-    cat ${reads} > ${prefix}.merged.fasta
+    cat ${fastas} > ${prefix}.merged.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
