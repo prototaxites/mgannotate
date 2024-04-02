@@ -27,7 +27,7 @@ process COVERM_CONTIGS {
             --single ${reads} \\
             --strobealign-use-index \\
             --reference \${REF/%.r*.sti} \\
-            ${args} \\ 
+            ${args} \\
             --output-file ${prefix}.txt
 
         cat <<-END_VERSIONS > versions.yml
