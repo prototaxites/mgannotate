@@ -8,7 +8,7 @@ process COVERM_CONTIGS {
         'quay.io/biocontainers/coverm:0.7.0--h07ea13f_0' }"
     
     input:
-    tuple val(meta), path(reads), path(reference)
+    tuple val(meta), path(reads), path(sti), path(fasta)
 
     output:
     tuple val(meta), path("*.txt"), emit: coverage
@@ -20,7 +20,7 @@ process COVERM_CONTIGS {
     if(meta.single_end) {
         """
         TMPDIR=.
-        REF=${reference}
+        REF=${sti}
 
         coverm contig \\
             --threads ${task.cpus} \\
