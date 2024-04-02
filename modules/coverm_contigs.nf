@@ -15,7 +15,7 @@ process COVERM_CONTIGS {
     path "versions.yml"           , emit: versions
     
     script:
-    def prefix = task.args.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def ref = reference.replace("\\.r.*", "")
     """
     TMPDIR=.
