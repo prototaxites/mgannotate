@@ -26,6 +26,10 @@ workflow ANNOTATION {
 
     if(params.cluster_genes) {
         ch_predictions_to_name = ch_predictions
+        SED_FASTA_HEADER(ch_predictions_to_name)
+        ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
+        
+        ch_predictions_to_cat = SED_FASTA_HEADER.out.fasta
             | map { meta, fasta -> [ fasta ] }
             | collect
             | map { fastas -> 
@@ -33,11 +37,10 @@ workflow ANNOTATION {
                 [ meta, fastas ]
             }
 
-        CAT_FASTA(ch_predictions_to_name)
-        //ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
+        CAT_FASTA(ch_predictions_to_cat)
+        ch_versions = ch_versions.mix(CAT_FASTA.out.versions)
 
         ch_predictions_to_cluster = CAT_FASTA.out.fasta
-
         MMSEQS_EASYCLUSTER(ch_predictions_to_cluster)
         ch_versions = ch_versions.mix(MMSEQS_EASYCLUSTER.out.versions)
         ch_predictions_for_eggnog = MMSEQS_EASYCLUSTER.out.rep_fasta
