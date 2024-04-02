@@ -10,7 +10,7 @@
       "type": "object",
       "fa_icon": "fas fa-terminal",
       "description": "Define where the pipeline should find input data and save output data.",
-      "required": ["assemblies", "outdir"],
+      "required": ["outdir"],
       "properties": {
         "assemblies": {
           "type": "string",
@@ -35,6 +35,10 @@
           "format": "directory-path",
           "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
           "fa_icon": "fas fa-folder-open"
+        },
+        "assemblies_are_genes": {
+          "type": "boolean",
+          "description": "If the input contigs are already gene predictions, this can be specified to skip gene prediction."
         }
       }
     },
@@ -113,9 +117,14 @@
           "default": true,
           "description": "Enable annotation of genes"
         },
+        "cluster_genes": {
+          "type": "boolean",
+          "description": "Concatenate all contigs across all assemblies and cluster them prior to annotation."
+        },
         "mmseqs_cluster_options": {
           "type": "string",
-          "description": "Mmseqs command-line arguments for the mmseqs cluster call."
+          "description": "Mmseqs command-line arguments for the mmseqs cluster call.",
+          "default": "--min-seq-id 0.95 --cov-mode 1 -c 0.9"
         }
       }
     },

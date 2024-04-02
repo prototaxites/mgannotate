@@ -1,5 +1,6 @@
 
-include { MEGAHIT } from '../modules/megahit'
+include { MEGAHIT   } from '../modules/megahit'
+include { CAT_FASTQ } from '../modules/cat_fastq'
 
 workflow ASSEMBLY {
     take:
@@ -15,14 +16,16 @@ workflow ASSEMBLY {
         }
         | groupTuple(by: 0)
 
-
     ch_reads
         | map { meta, reads ->
-            meta.subMap("assemblyid")
+            def group = meta.subMap("assemblyid")
+            def endedness = meta.subMap('single_end')
+            [ group, endedness ]
         } 
-        | groupTuple()
-        | map { meta ->
-            if(meta.size() > 1) { 
+        | groupTuple(by: 0)
+        | map { meta, endedness ->
+            def unique_endedness = endedness.unique(false)
+            if(unique_endedness.size() > 1) { 
                 error("Error: For at least one assembly, you have provided both paired end and single-end reads. Reads for assembly must only be all of one kind or another at this time.") 
                 }
         }

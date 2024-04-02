@@ -1,6 +1,6 @@
 process MMSEQS_EASYCLUSTER {
     tag "${meta.assemblyid}"
-    label 'process_medium'
+    label 'process_high'
 
     conda "bioconda::mmseqs2=14.7e284"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -28,7 +28,7 @@ process MMSEQS_EASYCLUSTER {
         ${prefix} \\
         tmp/ \\
         --threads ${task.cpus} \\
-        ${args} \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
