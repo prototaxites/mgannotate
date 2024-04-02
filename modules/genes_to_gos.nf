@@ -64,7 +64,7 @@ process GENES_TO_GOS {
         eggnog <- mutate(eggnog, gene_name = query)
     }
 
-    if(${gff_exists} == "gff_exists") {
+    if("${gff_exists}" == "gff_exists") {
         gff <- read_tsv("${gff}", 
             col_names = c("seqname", "source", "feature", 
                 "start", "end", "score", "strand", "frame", "attribute")
