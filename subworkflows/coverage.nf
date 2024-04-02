@@ -47,7 +47,7 @@ workflow COVERAGE {
                 [ meta_join, meta, txt ]
             }
         
-        ch_gff = Channel.of([assemblyid: "genes", []])
+        ch_gff = Channel.of([[assemblyid: "genes"], []])
 
     } else {
         BOWTIE2_BUILD(fasta)
