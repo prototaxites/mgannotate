@@ -109,7 +109,7 @@ process GENES_TO_GOS {
         mutate(GO = "Unannotated") |>
         summarise(Nreads = sum(Count),
             Ngenes = n(),
-            genes_length = sum(gene_length),
+            genes_length = sum(gene_length, na.rm = TRUE),
             .by = GO)
 
     go_list <- pull(gos, id)
