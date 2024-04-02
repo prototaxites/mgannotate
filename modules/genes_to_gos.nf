@@ -38,7 +38,7 @@ process GENES_TO_GOS {
         return(summary)
     }
 
-    clustered <- ifelse("${input_is_clustered}" == "clustered", TRUE, FALSE)
+    clustered <- ifelse("${clustered}" == "clustered", TRUE, FALSE)
     gos <- read_csv("${go_list}")
 
     if(clustered == TRUE) {
