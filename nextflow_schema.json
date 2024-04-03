@@ -121,6 +121,11 @@
           "type": "boolean",
           "description": "Concatenate all contigs across all assemblies and cluster them prior to annotation."
         },
+        "cluster_id": {
+          "type": "string",
+          "default": "genes",
+          "description": "An assembly id that is applied to the clustered gene predictions. Will be used in the output filenames; useful if making multiple runs of the pipeline."
+        },
         "mmseqs_cluster_options": {
           "type": "string",
           "description": "Mmseqs command-line arguments for the mmseqs cluster call.",

@@ -33,7 +33,7 @@ workflow ANNOTATION {
             | map { meta, fasta -> [ fasta ] }
             | collect
             | map { fastas -> 
-                def meta = [assemblyid: "genes"]
+                def meta = [assemblyid: "${params.cluster_id}"]
                 [ meta, fastas ]
             }
 

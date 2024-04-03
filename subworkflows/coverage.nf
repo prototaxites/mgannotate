@@ -23,14 +23,14 @@ workflow COVERAGE {
 
         ch_index = STROBEALIGN_CREATEINDEX.out.index
             | map { meta, index, fasta ->
-                def meta_join = [assemblyid: "genes"]
+                def meta_join = [assemblyid: "${params.cluster_id}"]
                 [ meta_join, index, fasta ]
             }
 
         ch_reads_index = reads 
             | map { meta, reads ->
-                def meta_join = [assemblyid: "genes"]
-                def meta_new = meta + [assemblyid: "genes"]
+                def meta_join = [assemblyid: "${params.cluster_id}"]
+                def meta_new = meta + [assemblyid: "${params.cluster_id}"]
                 [ meta_join, meta_new, reads ]
             }
             | combine(ch_index, by: 0)
@@ -47,7 +47,7 @@ workflow COVERAGE {
                 [ meta_join, meta, txt ]
             }
         
-        ch_gff = Channel.of([[assemblyid: "genes"], []])
+        ch_gff = Channel.of([[assemblyid: "${params.cluster_id}"], []])
 
     } else {
         BOWTIE2_BUILD(fasta)

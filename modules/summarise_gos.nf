@@ -12,6 +12,7 @@ process SUMMARISE_GOS {
     path("GO_df_long.csv")
 
     script:
+    def prefix = params.cluster_genes ? "${cluster_id}_" : ""
     """
     #!/usr/bin/env Rscript
 
@@ -26,6 +27,6 @@ process SUMMARISE_GOS {
         list_rbind() |>
         left_join(gos)
 
-    write_csv(go_by_sample, "GO_df_long.csv")
+    write_csv(go_by_sample, "${prefix}GO_df_long.csv")
     """
 }
