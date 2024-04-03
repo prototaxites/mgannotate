@@ -22,26 +22,26 @@ workflow MGANNOTATE {
     DATABASES()
     ch_versions = ch_versions.mix(DATABASES.out.versions)
 
-    if(!params.assemblies_are_genes) {
-        if(params.reads && !params.assemblies) {
-            ASSEMBLY(
-                INPUT_CHECK.out.reads
-            )
-            ch_assemblies = ASSEMBLY.out.assemblies
-        } else {
-            ch_assemblies = INPUT_CHECK.out.assemblies
-        }
+    if(params.reads && !params.assemblies) {
+        ASSEMBLY(
+            INPUT_CHECK.out.reads
+        )
+        ch_assemblies = ASSEMBLY.out.assemblies
+    } else {
+        ch_assemblies = INPUT_CHECK.out.assemblies
+    }
 
-        if (params.filter_contigs && params.filter_taxon_list && (params.mmseqs_tax_db || params.mmseqs_tax_db_local)) {
+    if (params.filter_contigs && params.filter_taxon_list && (params.mmseqs_tax_db || params.mmseqs_tax_db_local)) {
+        if(!params.assemblies_are_genes) {
             FILTER_CONTIGS (
                 ch_assemblies,
                 DATABASES.out.tax_db
             )
             ch_versions = ch_versions.mix(FILTER_CONTIGS.out.versions)
             ch_contigs  = FILTER_CONTIGS.out.filtered_fasta
-        } else {
-            ch_contigs  = ch_assemblies
         }
+    } else {
+        ch_contigs  = ch_assemblies
     }
 
     if((params.mmseqs_func_db || params.mmseqs_func_db_local)) {
