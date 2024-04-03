@@ -32,8 +32,5 @@ class WorkflowMgannotate {
         if(params.enable_coverage && !params.go_list) {
             log.warn("Warning: Coverage calculation will be skipped as --go_list not provided!")
         }
-        if(params.assemblies_are_genes && !params.cluster_genes) {
-            Nextflow.error("Error: --assemblies_are_genes is set but --cluster_genes is not - pipeline cannot function as there is currently no way to provide the requred GFF files.")
-        }
     }
 }

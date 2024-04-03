@@ -24,7 +24,7 @@ workflow ANNOTATION {
         ch_predictions = contigs
     }
 
-    if(params.cluster_genes) {
+    if(params.cluster_genes || params.assemblies_are_genes) {
         ch_predictions_to_name = ch_predictions
         SED_FASTA_HEADER(ch_predictions_to_name)
         ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)

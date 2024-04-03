@@ -17,7 +17,7 @@ workflow COVERAGE {
     main:
     ch_versions = Channel.empty()
 
-    if(params.cluster_genes) {
+    if(params.cluster_genes || params.assemblies_are_genes) {
         STROBEALIGN_CREATEINDEX(fasta)
         ch_versions = ch_versions.mix(STROBEALIGN_CREATEINDEX.out.versions)
 
