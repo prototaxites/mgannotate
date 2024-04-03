@@ -9,8 +9,9 @@ Currently, the pipeline performs the following:
 * (optional) (co-)assembles metagenome shotgun short reads with [MEGAHIT](https://github.com/voutcn/megahit)
 * (optional) filters assembled contigs to remove or keep specific clades using [MMSeqs](https://github.com/soedinglab/MMseqs2/)
 * Predicts of protein-coding genes using [MetaEuk](https://github.com/soedinglab/metaeuk)
+* (optional) clustering of genes using [MMSeqs](https://github.com/soedinglab/MMseqs2/)
 * Annotates predicted genes using [eggnog-mapper](https://github.com/eggnogdb/eggnog-mapper)
-* Counts reads mapping to each gene in an assembly for each shotgun library using [bowtie2](https://bowtie-bio.sourceforge.net/bowtie2/index.shtml) and [HTSeq-count](https://github.com/htseq/htseq).
+* Counts reads mapping to each gene using either [HTSeq-count](https://github.com/htseq/htseq) or [CoverM](https://github.com/wwood/CoverM)
 * Produces count summaries for each GO in a provided list
 
 ## Usage
