@@ -9,7 +9,7 @@ process SUMMARISE_GOS {
     path(go_list)
 
     output:
-    path("GO_df_long.csv")
+    path("*GO_df_long.csv")
 
     script:
     def prefix = params.cluster_genes ? "${params.cluster_id}_" : ""
