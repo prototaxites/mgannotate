@@ -34,6 +34,6 @@ workflow INPUT_CHECK {
     }
 
     emit:
-    ch_assemblies // channel: [ val(meta), [ assemblies ] ]
-    ch_reads      // channel: [ val(meta), [ reads ]]            
+    assemblies = ch_assemblies // channel: [ val(meta), [ assemblies ] ]
+    reads      = ch_reads      // channel: [ val(meta), [ reads ]]            
 }
