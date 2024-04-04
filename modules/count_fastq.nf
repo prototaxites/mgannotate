@@ -1,5 +1,5 @@
 process COUNT_FASTQ {
-    tag "${meta.id}"
+    tag "${meta.sampleid}"
     label "process_single"
 
     input:
