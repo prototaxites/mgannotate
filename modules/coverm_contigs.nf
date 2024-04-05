@@ -1,5 +1,5 @@
 process COVERM_CONTIGS {
-    tag "${meta.assemblyid}"
+    tag "${meta.sampleid}"
     label "process_medium"
 
     conda "bioconda::coverm=0.7.0-0"
