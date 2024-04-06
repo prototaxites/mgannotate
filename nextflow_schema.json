@@ -144,6 +144,11 @@
           "default": true,
           "description": "Enable calculation of coverage of genes"
         },
+        "use_strobealign": {
+          "type": "boolean",
+          "default": true,
+          "description": "If using gene clustering, use strobealign to map reads to genes using CoverM. If disabled, Minimap2 is used instead."
+        },
         "go_list": {
           "type": "string",
           "default": "$baseDir/assets/GOs.csv",

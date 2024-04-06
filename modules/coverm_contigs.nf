@@ -15,18 +15,20 @@ process COVERM_CONTIGS {
     path "versions.yml"           , emit: versions
     
     script:
-    def args   = task.ext.args ?: ""
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ""
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def use_sti = sti ? "--strobealign-use-index" : ""
+    def minimap = sti ? "" : "--mapper minimap2-sr"
     if(meta.single_end) {
         """
         TMPDIR=.
-        REF=${sti}
 
         coverm contig \\
             --threads ${task.cpus} \\
             --single ${reads} \\
-            --strobealign-use-index \\
-            --reference \${REF/%.r*.sti} \\
+            --reference ${fasta} \\
+            ${sti} \\
+            ${minimap} \\
             ${args} \\
             --output-file ${prefix}.txt
 
