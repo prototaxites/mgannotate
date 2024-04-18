@@ -11,7 +11,6 @@ process GENES_TO_GOS {
     val(input_is_clustered)
 
     output:
-    tuple val(meta), path("*.annotations_counts.csv") , emit: annotations_counts
     tuple val(meta), path("*.GOSummary.csv")          , emit: gosummary
 
     script:
@@ -120,7 +119,6 @@ process GENES_TO_GOS {
         mutate(Sample = "${prefix}",
             TotalSampleReads = ${meta.nreads})
 
-    write_csv(df, "${prefix}.annotations_counts.csv")
     write_csv(go_counts, "${prefix}.GOSummary.csv")
     """
 }
