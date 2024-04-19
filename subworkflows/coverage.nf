@@ -128,24 +128,26 @@ workflow COVERAGE {
         | map { meta_join, meta, counts, eggnog, gff -> 
             [meta, counts, eggnog, gff]
         }
-   
-    GENES_TO_GOS(
-        ch_go_summary_input,
-        go_list,
-        params.cluster_genes
-    )
+    
+    if(params.go_list) { 
+        GENES_TO_GOS(
+            ch_go_summary_input,
+            go_list,
+            params.cluster_genes
+        )
 
-    GENES_TO_GOS.out.gosummary
-        | map { meta, gosummary ->
-            [ gosummary ]
-        }
-        | collect
-        | set { ch_gosummaries }
+        GENES_TO_GOS.out.gosummary
+            | map { meta, gosummary ->
+                [ gosummary ]
+            }
+            | collect
+            | set { ch_gosummaries }
 
-    SUMMARISE_GOS(
-        ch_gosummaries,
-        go_list
-    )
+        SUMMARISE_GOS(
+            ch_gosummaries,
+            go_list
+        )
+    }
 
     emit:
     versions = ch_versions
