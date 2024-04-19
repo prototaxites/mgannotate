@@ -17,7 +17,6 @@ process COVERM_CONTIGS {
     script:
     def args    = task.ext.args ?: ""
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def use_sti = sti ? "--strobealign-use-index" : "--mapper minimap2-sr"
     if(meta.single_end) {
         """
         TMPDIR=.
@@ -26,7 +25,6 @@ process COVERM_CONTIGS {
             --threads ${task.cpus} \\
             --single ${reads} \\
             --reference ${fasta} \\
-            ${use_sti} \\
             ${args} \\
             --output-file ${prefix}.txt
 
@@ -44,7 +42,6 @@ process COVERM_CONTIGS {
             --threads ${task.cpus} \\
             -1 ${reads[0]} -2 ${reads[1]} \\
             --reference ${fasta} \\
-            ${use_sti} \\
             ${args} \\
             --output-file ${prefix}.txt
 

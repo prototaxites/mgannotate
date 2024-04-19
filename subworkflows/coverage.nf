@@ -18,38 +18,16 @@ workflow COVERAGE {
     ch_versions = Channel.empty()
 
     if(params.cluster_genes || params.assemblies_are_genes) {
-        if(params.use_strobealign) {
-            STROBEALIGN_CREATEINDEX(fasta)
-            ch_versions = ch_versions.mix(STROBEALIGN_CREATEINDEX.out.versions)
-
-            ch_index = STROBEALIGN_CREATEINDEX.out.index
-                | map { meta, index, fasta ->
-                    def meta_join = [assemblyid: "${params.cluster_id}"]
-                    [ meta_join, index, fasta ]
-                }
-
-            ch_reads_index = reads 
-                | map { meta, reads ->
-                    def meta_join = [assemblyid: "${params.cluster_id}"]
-                    def meta_new = meta + [assemblyid: "${params.cluster_id}"]
-                    [ meta_join, meta_new, reads ]
-                }
-                | combine(ch_index, by: 0)
-                | map { meta_join, meta, reads, index, fasta ->
-                    [ meta, reads, index, fasta ]
-                }
-        } else {
-            ch_reads_index = reads 
-                | map { meta, reads ->
-                    def meta_join = [assemblyid: "${params.cluster_id}"]
-                    def meta_new = meta + [assemblyid: "${params.cluster_id}"]
-                    [ meta_join, meta_new, reads ]
-                }
-                | combine(fasta, by: 0)
-                | map { meta_join, meta, reads, fasta ->
-                    [ meta, reads, [], fasta ]
-                }
-        }
+        ch_reads_index = reads 
+            | map { meta, reads ->
+                def meta_join = [assemblyid: "${params.cluster_id}"]
+                def meta_new = meta + [assemblyid: "${params.cluster_id}"]
+                [ meta_join, meta_new, reads ]
+            }
+            | combine(fasta, by: 0)
+            | map { meta_join, meta, reads, fasta ->
+                [ meta, reads, [], fasta ]
+            }
 
         COVERM_CONTIGS(ch_reads_index)
         ch_versions = ch_versions.mix(COVERM_CONTIGS.out.versions)
