@@ -70,7 +70,7 @@ workflow ANNOTATION {
     if(params.cluster_genes || params.assemblies_are_genes) {
         ch_output_annotations = EGGNOG_MAPPER.out.annotations
             | map { meta, annotations -> [ annotations ] }
-            | collectFile(name: "${cluster_id}.emapper.annotations", keepHeader: 5)
+            | collectFile(name: "${params.cluster_id}.emapper.annotations", keepHeader: 5)
             | map { annotations ->
                 def meta = [assemblyid: "${params.cluster_id}"]
                 [ meta, annotations ]
