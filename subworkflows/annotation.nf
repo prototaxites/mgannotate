@@ -47,7 +47,7 @@ workflow ANNOTATION {
         // Split large gene catalogues into chunks
         ch_predictions_for_eggnog = MMSEQS_EASYCLUSTER.out.rep_fasta
             | map { meta, fasta ->
-                def split_fasta = fasta.splitFasta(size: 2.Gb)
+                def split_fasta = fasta.splitFasta(size: 2.Gb, file: true)
                 [ meta, split_fasta ]
             }
             | transpose
