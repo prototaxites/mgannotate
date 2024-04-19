@@ -62,7 +62,6 @@ workflow DATABASES {
     if(params.go_list) {
         ch_go_list = Channel.fromPath("${params.go_list}")
             | first
-            | set {  }
     } else {
         ch_go_list = Channel.empty()
     }
