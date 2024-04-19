@@ -14,6 +14,10 @@ Currently, the pipeline performs the following:
 * Counts reads mapping to each gene using either [HTSeq-count](https://github.com/htseq/htseq) or [CoverM](https://github.com/wwood/CoverM)
 * Produces count summaries for each GO in a provided list
 
+## Pipeline diagram
+
+![](assets/diagram.png)
+
 ## Usage
 
 The pipeline can be run with the following command:
