@@ -43,8 +43,8 @@ process COVERM_CONTIGS {
         coverm contig \\
             --threads ${task.cpus} \\
             -1 ${reads[0]} -2 ${reads[1]} \\
-            --strobealign-use-index \\
-            --reference \${REF/%.r*.sti} \\
+            --reference ${fasta} \\
+            ${use_sti} \\
             ${args} \\
             --output-file ${prefix}.txt
 
