@@ -27,7 +27,7 @@ jobs:
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
-          version: "{% raw %}${{ matrix.NXF_VER }}{% endraw %}"
+          version: "${{ matrix.NXF_VER }}"
 
       - name: Disk space cleanup
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
