@@ -2,7 +2,7 @@ include { CAT_FASTA           } from '../modules/cat_fasta'
 include { EGGNOG_MAPPER       } from '../modules/eggnog_mapper'
 include { MMSEQS_EASYCLUSTER  } from '../modules/mmseqs_easycluster'
 include { METAEUK_EASYPREDICT } from '../modules/metaeuk_easypredict'
-include { SED_FASTA_HEADER    } from '../modules/sed_fasta_header'
+include { SEQKIT_REPLACE      } from '../modules/sed_fasta_header'
 
 workflow ANNOTATION {
     take:
@@ -24,7 +24,7 @@ workflow ANNOTATION {
         ch_predictions = contigs
     }
 
-    SED_FASTA_HEADER(ch_predictions)
+    SEQKIT_REPLACE(ch_predictions)
     ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
     
     ch_predictions_to_cat = SED_FASTA_HEADER.out.fasta
