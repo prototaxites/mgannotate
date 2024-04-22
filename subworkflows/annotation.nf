@@ -2,7 +2,7 @@ include { CAT_FASTA           } from '../modules/cat_fasta'
 include { EGGNOG_MAPPER       } from '../modules/eggnog_mapper'
 include { MMSEQS_EASYCLUSTER  } from '../modules/mmseqs_easycluster'
 include { METAEUK_EASYPREDICT } from '../modules/metaeuk_easypredict'
-include { SEQKIT_REPLACE      } from '../modules/sed_fasta_header'
+include { SEQKIT_REPLACE      } from '../modules/seqkit_replace'
 
 workflow ANNOTATION {
     take:
