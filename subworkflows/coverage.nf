@@ -17,83 +17,26 @@ workflow COVERAGE {
     main:
     ch_versions = Channel.empty()
 
-    if(params.cluster_genes || params.assemblies_are_genes) {
-        ch_reads_index = reads 
-            | map { meta, reads ->
-                def meta_join = [assemblyid: "${params.cluster_id}"]
-                def meta_new = meta + [assemblyid: "${params.cluster_id}"]
-                [ meta_join, meta_new, reads ]
-            }
-            | combine(fasta, by: 0)
-            | map { meta_join, meta, reads, fasta ->
-                [ meta, reads, [], fasta ]
-            }
+    ch_reads_index = reads 
+        | map { meta, reads ->
+            def meta_join = [assemblyid: "${params.cluster_id}"]
+            def meta_new = meta + [assemblyid: "${params.cluster_id}"]
+            [ meta_join, meta_new, reads ]
+        }
+        | combine(fasta, by: 0)
+        | map { meta_join, meta, reads, fasta ->
+            [ meta, reads, [], fasta ]
+        }
 
-        COVERM_CONTIGS(ch_reads_index)
-        ch_versions = ch_versions.mix(COVERM_CONTIGS.out.versions)
+    COVERM_CONTIGS(ch_reads_index)
+    ch_versions = ch_versions.mix(COVERM_CONTIGS.out.versions)
 
-        ch_counts = COVERM_CONTIGS.out.coverage
-            | map { meta, txt ->
-                def meta_join = meta.subMap("assemblyid")
-                [ meta_join, meta, txt ]
-            }
-        
-        ch_gff = Channel.of([[assemblyid: "${params.cluster_id}"], []])
-
-    } else {
-        BOWTIE2_BUILD(fasta)
-        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-
-        ch_reads_to_join = reads
-            | map { meta, reads ->
-                def meta_join = meta.subMap("assemblyid")
-                [ meta_join, meta, reads ]
-            }
-
-        ch_indices_to_join = BOWTIE2_BUILD.out.index
-            | map { meta, index ->
-                def meta_join = meta.subMap("assemblyid")
-                [ meta_join, index ]
-            }
-
-        ch_reads_indices = ch_reads_to_join
-            | combine(ch_indices_to_join, by: 0)
-            | map { meta_join, meta, reads, index ->
-                [ meta, reads, index ]
-            }
-
-        BOWTIE2_ALIGN(ch_reads_indices,
-                    false,
-                    true)
-
-        ch_bams = BOWTIE2_ALIGN.out.aligned
-            | map { meta, bam ->
-                def meta_join = meta.subMap("assemblyid")
-                [ meta_join, meta, bam ]
-            }
-
-        ch_gff = gff
-            | map { meta, gff ->
-                def meta_join = meta.subMap("assemblyid")
-                [ meta_join, gff ]
-            }
-
-        ch_bams 
-            | combine(ch_gff, by: 0)
-            | map { meta_join, meta, bam, gff ->
-                [ meta, bam, [], gff ]
-            }
-            | set { ch_bam_gff }
-
-        HTSEQ_COUNT(ch_bam_gff)
-        
-        ch_counts = HTSEQ_COUNT.out.txt 
-            | map { meta, txt ->
-                def meta_join = meta.subMap("assemblyid")
-                [meta_join, meta, txt]
-            }
-    }
-
+    ch_counts = COVERM_CONTIGS.out.coverage
+        | map { meta, txt ->
+            def meta_join = meta.subMap("assemblyid")
+            [ meta_join, meta, txt ]
+        }
+    
     ch_eggnog = annotations
         | map { meta, tsv ->
             def meta_join = meta.subMap("assemblyid")
@@ -102,9 +45,8 @@ workflow COVERAGE {
 
     ch_go_summary_input = ch_counts
         | combine(ch_eggnog, by: 0)
-        | combine(ch_gff, by: 0)
         | map { meta_join, meta, counts, eggnog, gff -> 
-            [meta, counts, eggnog, gff]
+            [ meta, counts, eggnog, [] ]
         }
     
     if(params.go_list) { 

@@ -24,42 +24,36 @@ workflow ANNOTATION {
         ch_predictions = contigs
     }
 
-    if(params.cluster_genes || params.assemblies_are_genes) {
-        ch_predictions_to_name = ch_predictions
-        SED_FASTA_HEADER(ch_predictions_to_name)
-        ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
-        
-        ch_predictions_to_cat = SED_FASTA_HEADER.out.fasta
-            | map { meta, fasta -> [ fasta ] }
-            | collect
-            | map { fastas -> 
-                def meta = [assemblyid: "${params.cluster_id}"]
-                [ meta, fastas ]
-            }
+    SED_FASTA_HEADER(ch_predictions)
+    ch_versions = ch_versions.mix(SED_FASTA_HEADER.out.versions)
+    
+    ch_predictions_to_cat = SED_FASTA_HEADER.out.fasta
+        | map { meta, fasta -> [ fasta ] }
+        | collect
+        | map { fastas -> 
+            def meta = [assemblyid: "${params.cluster_id}"]
+            [ meta, fastas ]
+        }
 
-        CAT_FASTA(ch_predictions_to_cat)
-        ch_versions = ch_versions.mix(CAT_FASTA.out.versions)
+    CAT_FASTA(ch_predictions_to_cat)
+    ch_versions = ch_versions.mix(CAT_FASTA.out.versions)
 
-        ch_predictions_to_cluster = CAT_FASTA.out.fasta
-        MMSEQS_EASYCLUSTER(ch_predictions_to_cluster)
-        ch_versions = ch_versions.mix(MMSEQS_EASYCLUSTER.out.versions)
+    ch_predictions_to_cluster = CAT_FASTA.out.fasta
+    MMSEQS_EASYCLUSTER(ch_predictions_to_cluster)
+    ch_versions = ch_versions.mix(MMSEQS_EASYCLUSTER.out.versions)   
 
-        // Split large gene catalogues into chunks
-        ch_predictions_for_eggnog = MMSEQS_EASYCLUSTER.out.rep_fasta
-            | map { meta, fasta ->
-                def split_fasta = fasta.splitFasta(size: 2.Gb, file: true)
-                [ meta, split_fasta ]
-            }
-            | transpose
-            | map { meta, fasta -> 
-                def chunk_id = fasta.name.split('\\.')[1]
-                def meta_new = meta + [chunk: chunk_id]
-                [ meta, fasta, [] ] 
-            }
-    } else {
-        ch_predictions_for_eggnog = ch_predictions
-            | combine(METAEUK_EASYPREDICT.out.gff, by: 0)
-    }
+    // Split large gene catalogues into chunks
+    ch_predictions_for_eggnog = MMSEQS_EASYCLUSTER.out.rep_fasta
+        | map { meta, fasta ->
+            def split_fasta = fasta.splitFasta(size: 2.Gb, file: true)
+            [ meta, split_fasta ]
+        }
+        | transpose
+        | map { meta, fasta -> 
+            def chunk_id = fasta.name.split('\\.')[1]
+            def meta_new = meta + [chunk: chunk_id]
+            [ meta, fasta, [] ] 
+        }
 
     EGGNOG_MAPPER(
         ch_predictions_for_eggnog,
@@ -67,17 +61,13 @@ workflow ANNOTATION {
     )
 
     // Reassemble chunked eggnog output
-    if(params.cluster_genes || params.assemblies_are_genes) {
-        ch_output_annotations = EGGNOG_MAPPER.out.annotations
-            | map { meta, annotations -> [ annotations ] }
-            | collectFile(name: "${params.cluster_id}.emapper.annotations", keepHeader: true, skip: 5)
-            | map { annotations ->
-                def meta = [assemblyid: "${params.cluster_id}"]
-                [ meta, annotations ]
-            }
-    } else {
-        ch_output_annotations = EGGNOG_MAPPER.out.annotations
-    }
+    ch_output_annotations = EGGNOG_MAPPER.out.annotations
+        | map { meta, annotations -> [ annotations ] }
+        | collectFile(name: "${params.cluster_id}.emapper.annotations", keepHeader: true, skip: 5)
+        | map { annotations ->
+            def meta = [assemblyid: "${params.cluster_id}"]
+            [ meta, annotations ]
+        }
 
     ch_contigs = params.cluster_genes ? MMSEQS_EASYCLUSTER.out.rep_fasta : contigs
 
