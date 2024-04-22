@@ -27,7 +27,7 @@ workflow ANNOTATION {
     SEQKIT_REPLACE(ch_predictions)
     ch_versions = ch_versions.mix(SEQKIT_REPLACE.out.versions)
     
-    ch_predictions_to_cat = SED_FASTA_HEADER.out.fasta
+    ch_predictions_to_cat = SEQKIT_REPLACE.out.fasta
         | map { meta, fasta -> [ fasta ] }
         | collect
         | map { fastas -> 

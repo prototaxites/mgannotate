@@ -12,7 +12,7 @@ process SEQKIT_REPLACE {
     tuple val(meta), path(fasta)
 
     output:
-    tuple val(meta), path("*.fasta"), emit: fastx
+    tuple val(meta), path("*.fasta"), emit: fasta
     path "versions.yml"             , emit: versions
 
     when:
