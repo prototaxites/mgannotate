@@ -20,13 +20,13 @@ process SEQKIT_REPLACE {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.assemblyid}"
     """
     seqkit \\
         replace \\
         ${args} \\
         --threads ${task.cpus} \\
-        -i ${fastx} \\
+        -i ${fasta} \\
         -o ${prefix}.fasta
 
     cat <<-END_VERSIONS > versions.yml
