@@ -52,8 +52,7 @@ workflow COVERAGE {
     if(params.go_list) { 
         GENES_TO_GOS(
             ch_go_summary_input,
-            go_list,
-            params.cluster_genes
+            go_list
         )
 
         GENES_TO_GOS.out.gosummary
