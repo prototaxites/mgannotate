@@ -62,7 +62,7 @@ workflow ANNOTATION {
 
     // Reassemble chunked eggnog output
     ch_output_annotations = EGGNOG_MAPPER.out.annotations
-        | map { meta, annotations -> [ annotations ] }
+        | map { meta, annotations -> annotations }
         | collectFile(name: "${params.cluster_id}.emapper.annotations", keepHeader: true, skip: 5)
         | map { annotations ->
             def meta = [assemblyid: "${params.cluster_id}"]
