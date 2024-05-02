@@ -55,12 +55,11 @@ workflow COVERAGE {
             go_list
         )
 
-        GENES_TO_GOS.out.gosummary
+        ch_gosummaries = GENES_TO_GOS.out.gosummary
             | map { meta, gosummary ->
                 [ gosummary ]
             }
             | collect
-            | set { ch_gosummaries }
 
         SUMMARISE_GOS(
             ch_gosummaries,
