@@ -71,6 +71,6 @@ workflow ANNOTATION {
     emit:
     contigs      = MMSEQS_EASYCLUSTER.out.rep_fasta
     gff          = params.assemblies_are_genes ? [] : METAEUK_EASYPREDICT.out.gff
-    // annotations  = CAT_EMAPPER.out.merged_annotation
+    annotations  = CAT_EMAPPER.out.merged_annotation
     versions     = ch_versions
 }
