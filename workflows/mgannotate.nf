@@ -52,14 +52,14 @@ workflow MGANNOTATE {
             ch_versions = ch_versions.mix(ANNOTATION.out.versions)
 
             if(params.enable_coverage && params.go_list) {
-                // COVERAGE(
-                //     INPUT_CHECK.out.reads,
-                //     ANNOTATION.out.contigs,
-                //     ANNOTATION.out.annotations,
-                //     ANNOTATION.out.gff,
-                //     DATABASES.out.go_list
-                // )
-                // ch_versions = ch_versions.mix(COVERAGE.out.versions)
+                COVERAGE(
+                    INPUT_CHECK.out.reads,
+                    ANNOTATION.out.contigs,
+                    ANNOTATION.out.annotations,
+                    ANNOTATION.out.gff,
+                    DATABASES.out.go_list
+                )
+                ch_versions = ch_versions.mix(COVERAGE.out.versions)
             }
         }
     }

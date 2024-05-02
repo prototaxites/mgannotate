@@ -53,10 +53,8 @@ workflow ANNOTATION {
         | map { meta, fasta -> 
             def chunk_id = fasta.name.split('\\.')[1]
             def meta_new = meta + [chunk: chunk_id]
-            [ meta, fasta, [] ] 
+            [ meta_new, fasta, [] ] 
         }
-
-    ch_predictions_for_eggnog.View()
 
     EGGNOG_MAPPER(
         ch_predictions_for_eggnog,
@@ -67,8 +65,8 @@ workflow ANNOTATION {
     ch_annotations_to_merge = EGGNOG_MAPPER.out.annotations
         | groupTuple(by: 0)
     
-    // CAT_EMAPPER(ch_annotations_to_merge, 5, "#")
-    // ch_versions = ch_versions.mix(CAT_EMAPPER.out.versions)
+    CAT_EMAPPER(ch_annotations_to_merge, 5, "#")
+    ch_versions = ch_versions.mix(CAT_EMAPPER.out.versions)
 
     emit:
     contigs      = MMSEQS_EASYCLUSTER.out.rep_fasta
