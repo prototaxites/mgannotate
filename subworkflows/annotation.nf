@@ -1,4 +1,5 @@
 include { CAT_FASTA           } from '../modules/cat_fasta'
+include { CAT_EMAPPER         } from '../modules/cat_emapper'
 include { EGGNOG_MAPPER       } from '../modules/eggnog_mapper'
 include { MMSEQS_EASYCLUSTER  } from '../modules/mmseqs_easycluster'
 include { METAEUK_EASYPREDICT } from '../modules/metaeuk_easypredict'
@@ -61,19 +62,16 @@ workflow ANNOTATION {
     )
 
     // Reassemble chunked eggnog output
-    ch_output_annotations = EGGNOG_MAPPER.out.annotations
+    ch_annotations_to_merge = EGGNOG_MAPPER.out.annotations
         | map { meta, annotations -> annotations }
-        | collectFile(name: "${params.cluster_id}.emapper.annotations", keepHeader: true, skip: 5)
-        | map { annotations ->
-            def meta = [assemblyid: "${params.cluster_id}"]
-            [ meta, annotations ]
-        }
-
-    ch_contigs = params.cluster_genes ? MMSEQS_EASYCLUSTER.out.rep_fasta : contigs
+        | groupTuple(by: 0)
+    
+    CAT_EMAPPER(ch_annotations_to_merge, 5, "#")
+    ch_versions = ch_versions.mix(CAT_EMAPPER.out.versions)
 
     emit:
-    contigs      = ch_contigs
+    contigs      = MMSEQS_EASYCLUSTER.out.rep_fasta
     gff          = params.assemblies_are_genes ? [] : METAEUK_EASYPREDICT.out.gff
-    annotations  = ch_output_annotations
+    annotations  = CAT_EMAPPER.out.merged_annotation
     versions     = ch_versions
 }
