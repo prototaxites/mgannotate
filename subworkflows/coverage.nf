@@ -45,7 +45,7 @@ workflow COVERAGE {
 
     ch_go_summary_input = ch_counts
         | combine(ch_eggnog, by: 0)
-        | map { meta_join, meta, counts, eggnog, gff -> 
+        | map { meta_join, meta, counts, eggnog -> 
             [ meta, counts, eggnog, [] ]
         }
     
