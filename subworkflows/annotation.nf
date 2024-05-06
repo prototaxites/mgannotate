@@ -63,6 +63,10 @@ workflow ANNOTATION {
 
     // Reassemble chunked eggnog output
     ch_annotations_to_merge = EGGNOG_MAPPER.out.annotations
+        | map { meta, emapper -> 
+            def meta_new = meta.submap("assemblyid")
+            [ meta_new, emapper ]
+        }
         | groupTuple(by: 0)
     
     CAT_EMAPPER(ch_annotations_to_merge, 5, "#")
