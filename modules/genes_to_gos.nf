@@ -43,7 +43,7 @@ process GENES_TO_GOS {
             "max_annot_lvl", "COG_category", "Description", "Preferred_name", "GO",
             "EC", "KEGG_ko", "KEGG_Pathway", "KEGG_Module",
             "KEGG_Reaction", "KEGG_rclass",	"BRITE", "KEGG_TC",	"CAZy",	"BiGG_Reaction", "PFAMs")
-    ) |> mutate(eggnog, gene_name = query)
+    ) |> mutate(gene_name = query)
 
     df <- counts |>
         left_join(eggnog, by = "gene_name") |>

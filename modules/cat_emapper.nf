@@ -22,7 +22,7 @@ process CAT_EMAPPER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    head -n ${header_length} > header.txt
+    head -n ${header_length} ${emappers[0]} > header.txt
     cat ${emappers} > ${prefix}.emapper.annotations
 
     sed -i '/^${comment}/d' ${prefix}.emapper.annotations
