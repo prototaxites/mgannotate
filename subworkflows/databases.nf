@@ -52,18 +52,16 @@ workflow DATABASES {
     }
     
     if(params.eggnog_db) {
-        Channel.fromPath("${params.eggnog_db}")
+        ch_eggnog_db = Channel.fromPath("${params.eggnog_db}")
             | first
-            | set { ch_eggnog_db }
     } else {
         EGGNOG_MAPPER_DATABASE()
         ch_eggnog_db = EGGNOG_MAPPER_DATABASE.out.database
     }
 
     if(params.go_list) {
-        Channel.fromPath("${params.go_list}")
+        ch_go_list = Channel.fromPath("${params.go_list}")
             | first
-            | set { ch_go_list }
     } else {
         ch_go_list = Channel.empty()
     }

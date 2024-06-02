@@ -14,6 +14,10 @@ Currently, the pipeline performs the following:
 * Counts reads mapping to each gene using either [HTSeq-count](https://github.com/htseq/htseq) or [CoverM](https://github.com/wwood/CoverM)
 * Produces count summaries for each GO in a provided list
 
+## Pipeline diagram
+
+![](assets/diagram.png)
+
 ## Usage
 
 The pipeline can be run with the following command:
@@ -73,8 +77,10 @@ The output folder (`--outdir`) contains the following directories:
 * `annotations`:
     - `metaeuk/{assemblyid}/`: MetaEuk protein and nucleotide fasta files of predicted genes, and GFF files
     - `eggnog-mapper/{assemblyid}/`: eggnog-mapper annotation files
-    - `clusters/`: if using gene clustering, the fasta and cluster identities from MMSeqs clustering.
-* `coverage/`: Read counts per gene, with eggnog-mapper annotations, and GO summaries per sample.
+    - `clusters/`: if using gene clustering, the fasta and cluster identities from MMSeqs clustering
+* `coverage/`: 
+    - `GOs/{sampleid}.GOSummary.csv`: Per-sample abundances of each GO term in the supplied list
+    - `coverm/{sampleid}.txt`: Per-gene read counts in TSV format
 * `GO_df_long.csv`: GO summaries for all samples merged into one summary file
 * `taxonomy/{assemblyid}_taxdb/`: MMseqs taxonomy DBs for the unfiltered assemblies.
 

@@ -8,17 +8,16 @@ process EGGNOG_MAPPER_DATABASE {
         'biocontainers/eggnog-mapper:2.1.12--pyhdfd78af_0' }"
 
     output:
-    path("${prefix}/")  , emit: database
+    path("eggnog/")     , emit: database
     path "versions.yml" , emit: versions
 
     script:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: 'eggnog'
     """
-    mkdir ${prefix}/
+    mkdir eggnog/
 
     download_eggnog_data.py  \\
-        --data_dir ${prefix} \\
+        --data_dir eggnog/ \\
         -y \\
         ${args}
 

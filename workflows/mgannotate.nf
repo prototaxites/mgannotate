@@ -32,14 +32,12 @@ workflow MGANNOTATE {
     }
 
     if (params.filter_contigs && params.filter_taxon_list && (params.mmseqs_tax_db || params.mmseqs_tax_db_local)) {
-        if(!params.assemblies_are_genes) {
             FILTER_CONTIGS (
                 ch_assemblies,
                 DATABASES.out.tax_db
             )
             ch_versions = ch_versions.mix(FILTER_CONTIGS.out.versions)
             ch_contigs  = FILTER_CONTIGS.out.filtered_fasta
-        }
     } else {
         ch_contigs  = ch_assemblies
     }
